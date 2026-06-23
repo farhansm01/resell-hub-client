@@ -4,6 +4,7 @@
 import HeroSection from "@/components/home/HeroSection";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import SuccessStories from "@/components/home/SuccessStories";
+import SustainabilityImpact from "@/components/home/SustainabilityImpact";
 // Sections below will be added as they are built
 // import PopularCategories from "@/components/home/PopularCategories";
 
@@ -20,6 +21,7 @@ export default function HomePage() {
       {/* Section 2 — Featured Products */}
       <FeaturedProducts />
       <SuccessStories/>
+      <SustainabilityImpact/>
 
       {/* Uncomment below as each section is built */}
       {/* <PopularCategories /> */}
