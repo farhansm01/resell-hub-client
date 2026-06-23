@@ -3,14 +3,13 @@
 import { useState } from "react";
 import { Drawer, DrawerContent, DrawerBody, Spinner } from "@heroui/react";
 import { Bars } from "@gravity-ui/icons";
-import SellerSidebar from "@/components/dashboard/SellerSidebar";
-import { useRoleGuard } from "@/lib/sessions";
+import BuyerSidebar from "@/components/dashboard/BuyerSidebar";
+import { useRoleGuard } from "@/lib/session";
 
-export default function SellerDashboardLayout({ children }) {
+export default function BuyerDashboardLayout({ children }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const { isLoading } = useRoleGuard("seller");
+  const { isLoading } = useRoleGuard("buyer");
 
-  // Block render until role is confirmed, to avoid a flash of dashboard content
   if (isLoading) {
     return (
       <div className="flex h-screen items-center justify-center bg-[#FAFAF9]">
@@ -22,13 +21,13 @@ export default function SellerDashboardLayout({ children }) {
   return (
     <div className="flex h-screen overflow-hidden bg-[#FAFAF9]">
       <aside className="hidden lg:flex lg:w-[250px] lg:shrink-0 lg:flex-col border-r border-[#E7E5E4]">
-        <SellerSidebar />
+        <BuyerSidebar />
       </aside>
 
       <Drawer isOpen={isDrawerOpen} onOpenChange={setIsDrawerOpen} placement="left" size="xs">
         <DrawerContent>
           <DrawerBody className="p-0">
-            <SellerSidebar onNavigate={() => setIsDrawerOpen(false)} />
+            <BuyerSidebar onNavigate={() => setIsDrawerOpen(false)} />
           </DrawerBody>
         </DrawerContent>
       </Drawer>
