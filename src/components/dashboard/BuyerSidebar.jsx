@@ -3,14 +3,24 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Avatar, Chip, Button } from "@heroui/react";
-import { House, FolderOpen, Person } from "@gravity-ui/icons";
+import {
+  House,
+  FolderOpen,
+  Star,
+  ChartColumn,
+  Thunderbolt,
+  Person,
+} from "@gravity-ui/icons";
 import { useSession, authClient } from "@/lib/auth-client";
 import { toast } from "react-toastify";
 
-// Placeholder — update once buyer pages (orders, wishlist, etc.) exist
 const NAV_LINKS = [
   { label: "Overview", href: "/dashboard/buyer", icon: House },
-  { label: "My Orders", href: "/dashboard/buyer/orders", icon: FolderOpen },
+  { label: "My Orders", href: "/dashboard/buyer/my-orders", icon: FolderOpen },
+  { label: "Wishlist", href: "/dashboard/buyer/wishlist", icon: Star },
+  { label: "Payment History", href: "/dashboard/buyer/payment-history", icon: ChartColumn },
+  { label: "Write a Review", href: "/dashboard/buyer/review", icon: Thunderbolt },
+  { label: "Profile", href: "/dashboard/buyer/profile", icon: Person },
 ];
 
 export default function BuyerSidebar({ onNavigate }) {

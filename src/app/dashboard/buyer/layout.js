@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Drawer, DrawerContent, DrawerBody, Spinner } from "@heroui/react";
 import { Bars } from "@gravity-ui/icons";
 import BuyerSidebar from "@/components/dashboard/BuyerSidebar";
-import { useRoleGuard } from "@/lib/session";
+import { useRoleGuard } from "@/lib/sessions";
 
 export default function BuyerDashboardLayout({ children }) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
