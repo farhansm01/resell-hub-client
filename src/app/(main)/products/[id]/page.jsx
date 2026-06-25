@@ -23,6 +23,7 @@ export default function ProductDetailsPage() {
   const [reviews, setReviews] = useState([]);
   const [productLoading, setProductLoading] = useState(true);
   const [wishlistLoading, setWishlistLoading] = useState(false);
+  
 
   // fetch product and reviews on mount
   useEffect(() => {
@@ -37,6 +38,9 @@ export default function ProductDetailsPage() {
       .then(setReviews)
       .catch(() => setReviews([]));
   }, [id]);
+
+
+
 
   // add to wishlist handler
   const handleAddToWishlist = async () => {
@@ -60,16 +64,30 @@ export default function ProductDetailsPage() {
     }
   };
 
-  // buy now handler — placeholder until Stripe is added
-  const handleBuyNow = () => {
+  
+  // buy now handler — stores product in sessionStorage and redirects to checkout
+  const handleBuyNow = async () => {
     if (!user) {
       router.push("/signin");
       return;
     }
-    // Stripe checkout will go here
-    toast.info("Checkout coming soon!");
-  };
 
+    // store product data for checkout page
+    sessionStorage.setItem(
+      "checkoutProduct",
+      JSON.stringify({
+        _id: product._id,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+        sellerId: product.sellerId,
+        sellerName: product.sellerName,
+        sellerEmail: product.sellerEmail,
+      })
+    );
+
+    router.push("/checkout");
+  };
   // star rating display
   const renderStars = (rating) => {
     return Array.from({ length: 5 }).map((_, i) => (
@@ -149,7 +167,7 @@ export default function ProductDetailsPage() {
           </h1>
 
           <p className="text-3xl font-bold" style={{ color: "#F97316" }}>
-            ৳{product.price.toLocaleString()}
+            ${product.price.toLocaleString()}
           </p>
 
           {/* Badges */}

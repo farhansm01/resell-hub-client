@@ -15,3 +15,16 @@ export async function addToWishlist(userId, productId) {
   if (!res.ok) throw new Error(data.message || "Failed to add to wishlist");
   return data;
 }
+
+
+// DELETE /api/wishlist/:wishlistId?userId= — remove item from wishlist
+export async function removeFromWishlist(wishlistId, userId) {
+  const res = await fetch(`${BASE_URL}/api/wishlist/${wishlistId}?userId=${userId}`, {
+    method: "DELETE",
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) throw new Error(data.message || "Failed to remove from wishlist");
+  return data;
+}

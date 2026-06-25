@@ -46,3 +46,14 @@ export async function deleteProduct(id, sellerId) {
 
   return res.json();
 }
+
+// POST /api/checkout_sessions — creates Stripe session, returns { url }
+export async function createCheckoutSession(data) {
+  const res = await fetch("/api/checkout_sessions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Failed to create checkout session");
+  return res.json();
+}

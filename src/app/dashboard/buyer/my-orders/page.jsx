@@ -58,6 +58,7 @@ export default function MyOrdersPage() {
       }
     };
     fetchOrders();
+    console.log('buyerId from session:', buyerId)
   }, [buyerId, isPending]);
 
   const handleCancel = async (orderId) => {
