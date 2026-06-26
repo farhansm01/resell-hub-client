@@ -1,7 +1,8 @@
+// components/home/SuccessStories.jsx
+
 "use client";
 
 import { motion } from "framer-motion";
-import { Card, Chip, Avatar } from "@heroui/react";
 import { StarFill } from "@gravity-ui/icons";
 
 const stories = [
@@ -27,6 +28,24 @@ const stories = [
       "I purchased a like-new phone and saved thousands compared to buying a new one. Definitely worth it.",
   },
 ];
+
+// Plain initials avatar — replaces HeroUI Avatar
+function InitialsAvatar({ name }) {
+  const initials = name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
+
+  return (
+    <div
+      className="shrink-0 w-11 h-11 rounded-full flex items-center justify-center font-semibold text-sm"
+      style={{ background: "#FFF7ED", color: "#F97316" }}
+    >
+      {initials}
+    </div>
+  );
+}
 
 export default function SuccessStories() {
   return (
@@ -61,70 +80,57 @@ export default function SuccessStories() {
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {stories.map((story, index) => (
-            <motion.div
-              key={story.id}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.1,
-              }}
-            >
-              <Card
-                className="h-full hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
-                style={{
-                  background: "#FFFFFF",
-                  border: "1px solid #E7E5E4",
-                }}
+          {stories.map((story, index) => {
+            const isSeller = story.role === "Seller";
+            return (
+              <motion.div
+                key={story.id}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="h-full"
               >
-                <Card.Content className="p-6">
+                {/* plain card div — no HeroUI Card */}
+                <div
+                  className="h-full rounded-xl p-6 hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
+                  style={{ background: "#FFFFFF", border: "1px solid #E7E5E4" }}
+                >
                   <div className="flex items-center gap-4 mb-4">
-                    <Avatar
-                      name={story.name}
-                      className="shrink-0"
-                    />
+                    <InitialsAvatar name={story.name} />
 
                     <div>
-                      <h3
-                        className="font-bold"
-                        style={{ color: "#1C1917" }}
-                      >
+                      <h3 className="font-bold" style={{ color: "#1C1917" }}>
                         {story.name}
                       </h3>
 
-                      <Chip
-                        size="sm"
-                        variant="soft"
-                        color={story.role === "Seller" ? "warning" : "primary"}
+                      {/* plain badge — no HeroUI Chip */}
+                      <span
+                        className="inline-block text-xs font-medium px-2.5 py-0.5 rounded-full mt-0.5"
+                        style={{
+                          background: isSeller ? "#CA8A0415" : "#3B5BDB15",
+                          color: isSeller ? "#CA8A04" : "#3B5BDB",
+                        }}
                       >
                         {story.role}
-                      </Chip>
+                      </span>
                     </div>
                   </div>
 
                   {/* Stars */}
                   <div className="flex gap-1 mb-4">
                     {[...Array(5)].map((_, i) => (
-                      <StarFill
-                        key={i}
-                        className="size-4"
-                        style={{ color: "#F97316" }}
-                      />
+                      <StarFill key={i} width={16} height={16} style={{ color: "#F97316" }} />
                     ))}
                   </div>
 
-                  <p
-                    className="leading-relaxed"
-                    style={{ color: "#78716C" }}
-                  >
+                  <p className="leading-relaxed" style={{ color: "#78716C" }}>
                     &quot;{story.quote}&quot;
                   </p>
-                </Card.Content>
-              </Card>
-            </motion.div>
-          ))}
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

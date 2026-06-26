@@ -3,83 +3,59 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Card, Chip, Button } from "@heroui/react";
-import { motion } from "framer-motion";
-import { ArrowRight, Eye } from "@gravity-ui/icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { ArrowRight } from "@gravity-ui/icons";
+import { getProducts } from "@/lib/api/products";
 
-// Condition → color mapping for Chip
-const conditionColor = {
-  "Like New": "success",
-  "Good": "primary",
-  "Fair": "warning",
-  "Poor": "danger",
-};
-
-// Mock fallback data — used when backend is not ready
-const MOCK_PRODUCTS = [
-  { _id: "1", title: "Sony WH-1000XM4 Headphones", category: "Electronics", condition: "Like New", price: 4500, images: [] },
-  { _id: "2", title: "IKEA Study Desk", category: "Furniture", condition: "Good", price: 3200, images: [] },
-  { _id: "3", title: "iPhone 13 Pro", category: "Mobile Phones", condition: "Like New", price: 52000, images: [] },
-  { _id: "4", title: "Honda CB150R", category: "Vehicles", condition: "Good", price: 185000, images: [] },
-  { _id: "5", title: "Nike Air Max 270", category: "Fashion", condition: "Fair", price: 2800, images: [] },
-  { _id: "6", title: "Canon EOS M50", category: "Electronics", condition: "Like New", price: 38000, images: [] },
-];
-
-// Category emoji fallback map
-const categoryEmoji = {
-  Electronics: "💻",
-  Furniture: "🪑",
-  Vehicles: "🏍️",
-  Fashion: "👟",
-  "Mobile Phones": "📱",
-};
-
-// Skeleton placeholder card
+// Skeleton placeholder card while loading
 function SkeletonCard() {
   return (
     <div
-      className="rounded-2xl overflow-hidden animate-pulse"
-      style={{ background: "#FFFFFF", border: "1px solid #E7E5E4" }}
+      className="rounded-xl border animate-pulse overflow-hidden"
+      style={{ borderColor: "#E7E5E4", backgroundColor: "#FFFFFF" }}
     >
-      {/* Image placeholder */}
-      <div className="w-full h-48" style={{ background: "#E7E5E4" }} />
-      <div className="p-4 flex flex-col gap-3">
-        <div className="h-4 rounded-full w-3/4" style={{ background: "#E7E5E4" }} />
-        <div className="flex gap-2">
-          <div className="h-5 w-20 rounded-full" style={{ background: "#E7E5E4" }} />
-          <div className="h-5 w-16 rounded-full" style={{ background: "#E7E5E4" }} />
-        </div>
-        <div className="h-6 w-24 rounded-full" style={{ background: "#E7E5E4" }} />
-        <div className="h-9 rounded-xl w-full" style={{ background: "#E7E5E4" }} />
+      <div className="w-full h-48" style={{ backgroundColor: "#E7E5E4" }} />
+      <div className="p-4 space-y-3">
+        <div className="h-4 rounded" style={{ backgroundColor: "#E7E5E4" }} />
+        <div className="h-3 w-2/3 rounded" style={{ backgroundColor: "#E7E5E4" }} />
+        <div className="h-4 w-1/3 rounded" style={{ backgroundColor: "#E7E5E4" }} />
       </div>
     </div>
   );
 }
 
 export default function FeaturedProducts() {
+  const router = useRouter();
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const res = await fetch("http://localhost:5000/api/products?limit=6&status=approved");
-        if (!res.ok) throw new Error("Failed to fetch");
-        const data = await res.json();
-        const fetched = data.products || data;
-        // Fall back to mock if empty
-        setProducts(fetched.length > 0 ? fetched : MOCK_PRODUCTS);
+        const data = await getProducts({ limit: 6 });
+        setProducts(data.products || []);
       } catch (err) {
-        // Backend not ready — use mock data silently
-        console.warn("Using mock products:", err.message);
-        setProducts(MOCK_PRODUCTS);
+        console.warn("Failed to load featured products:", err.message);
+        setProducts([]);
       } finally {
         setLoading(false);
       }
     }
     fetchProducts();
   }, []);
+
+  // condition badge color — same logic as products/page.js
+  const conditionColor = (condition) => {
+    if (condition === "Like New") return "#16A34A";
+    if (condition === "Good") return "#CA8A04";
+    return "#78716C";
+  };
+
+  // No data and not loading -> don't render the section at all
+  if (!loading && products.length === 0) return null;
 
   return (
     <section className="w-full py-16 px-4 sm:px-6 lg:px-8" style={{ background: "#FAFAF9" }}>
@@ -102,15 +78,13 @@ export default function FeaturedProducts() {
             </h2>
           </div>
           <Link href="/products">
-            <Button
-              variant="bordered"
-              size="md"
-              className="font-semibold rounded-full hover:bg-orange-50 transition-colors duration-200"
+            <button
+              className="flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm border transition-colors duration-200 hover:bg-orange-50"
               style={{ color: "#F97316", borderColor: "#F97316" }}
-              endContent={<ArrowRight />}
             >
               View All
-            </Button>
+              <ArrowRight width={16} height={16} />
+            </button>
           </Link>
         </div>
 
@@ -121,81 +95,62 @@ export default function FeaturedProducts() {
             : products.map((product, i) => (
                 <motion.div
                   key={product._id}
-                  initial={{ opacity: 0, y: 40 }}
+                  initial={{ opacity: 0, y: 24 }}
                   whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-60px" }}
-                  transition={{ duration: 0.5, delay: i * 0.08, ease: "easeOut" }}
-                  className="h-full"
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.35, delay: i * 0.05 }}
+                  className="rounded-xl border overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
+                  style={{ borderColor: "#E7E5E4", backgroundColor: "#FFFFFF" }}
+                  onClick={() => router.push(`/products/${product._id}`)}
                 >
-                  <Card
-                    className="overflow-hidden h-full hover:shadow-xl transition-shadow duration-300 cursor-pointer"
-                    style={{ border: "1px solid #E7E5E4", background: "#FFFFFF" }}
-                  >
-                    {/* Product image — plain div, outside Card subcomponents */}
-                    <div
-                      className="w-full h-48 overflow-hidden"
-                      style={{ background: "#FFF7ED" }}
-                    >
-                      {product.images?.[0] ? (
-                        <img
-                          src={product.images[0]}
-                          alt={product.title}
-                          className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                        />
-                      ) : (
-                        // Emoji fallback by category
-                        <div className="w-full h-full flex items-center justify-center text-5xl">
-                          {categoryEmoji[product.category] || "📦"}
-                        </div>
-                      )}
+                  {/* Product image */}
+                  <div className="w-full h-48 overflow-hidden bg-gray-50">
+                    <img
+                      src={product.image}
+                      alt={product.title}
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+
+                  {/* Card body */}
+                  <div className="p-4 space-y-3">
+                    <h3 className="font-semibold text-sm line-clamp-2" style={{ color: "#1C1917" }}>
+                      {product.title}
+                    </h3>
+
+                    {/* Badges */}
+                    <div className="flex gap-2 flex-wrap">
+                      <span
+                        className="text-xs px-2 py-0.5 rounded-full font-medium"
+                        style={{ backgroundColor: "#FFF7ED", color: "#F97316" }}
+                      >
+                        {product.category}
+                      </span>
+                      <span
+                        className="text-xs px-2 py-0.5 rounded-full font-medium"
+                        style={{ backgroundColor: "#F0FDF4", color: conditionColor(product.condition) }}
+                      >
+                        {product.condition}
+                      </span>
                     </div>
 
-                    {/* Card header — title */}
-                    <Card.Header className="pb-0">
-                      <Card.Title
-                        className="text-base font-bold line-clamp-1"
-                        style={{ color: "#1C1917" }}
-                      >
-                        {product.title}
-                      </Card.Title>
-                    </Card.Header>
+                    {/* Price */}
+                    <p className="text-lg font-bold" style={{ color: "#F97316" }}>
+                      ৳{product.price.toLocaleString()}
+                    </p>
 
-                    {/* Card content — badges, price, button */}
-                    <Card.Content className="flex flex-col gap-3 pt-2">
-
-                      {/* Badges */}
-                      <div className="flex gap-2 flex-wrap">
-                        <Chip size="sm" variant="soft">
-                          {product.category}
-                        </Chip>
-                        <Chip
-                          size="sm"
-                          variant="soft"
-                          color={conditionColor[product.condition] || "default"}
-                        >
-                          {product.condition}
-                        </Chip>
-                      </div>
-
-                      {/* Price */}
-                      <p className="text-xl font-extrabold" style={{ color: "#F97316" }}>
-                        ৳{product.price?.toLocaleString()}
-                      </p>
-
-                      {/* View Details button */}
-                      <Link href={`/products/${product._id}`}>
-                        <Button
-                          size="sm"
-                          className="w-full font-semibold text-white rounded-full hover:opacity-90 transition-opacity duration-200"
-                          style={{ background: "#F97316" }}
-                          startContent={<Eye />}
-                        >
-                          View Details
-                        </Button>
-                      </Link>
-
-                    </Card.Content>
-                  </Card>
+                    {/* View Details button */}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // avoid double-navigation since card itself is clickable
+                        router.push(`/products/${product._id}`);
+                      }}
+                      className="w-full py-2 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
+                      style={{ backgroundColor: "#F97316" }}
+                    >
+                      View Details
+                    </button>
+                  </div>
                 </motion.div>
               ))}
         </div>

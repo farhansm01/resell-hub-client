@@ -3,13 +3,13 @@
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
 // GET /api/products — with search, category, sort, pagination
-export async function getProducts({ search = "", category = "", sort = "", page = 1 } = {}) {
+export async function getProducts({ search = "", category = "", sort = "", page = 1, limit = 9 } = {}) {
   const params = new URLSearchParams({
     ...(search && { search }),
     ...(category && category !== "all" && { category }),
     ...(sort && { sort }),
     page,
-    limit: 9,
+    limit,
   });
 
   const res = await fetch(`${BASE_URL}/api/products?${params}`);
