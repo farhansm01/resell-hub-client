@@ -23,3 +23,10 @@ export async function getProductById(id) {
   if (!res.ok) throw new Error("Failed to fetch product");
   return res.json();
 }
+
+// GET /api/products?sellerId= — fetch seller's own listings (all statuses)
+export async function getMyProducts(sellerId) {
+  const res = await fetch(`${BASE_URL}/api/products?sellerId=${sellerId}`);
+  if (!res.ok) throw new Error("Failed to fetch your products");
+  return res.json();
+}

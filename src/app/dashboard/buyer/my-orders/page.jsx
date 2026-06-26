@@ -110,6 +110,7 @@ export default function MyOrdersPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr style={{ borderBottom: "1px solid #E7E5E4" }}>
+                  <th className="text-left px-5 py-3 font-medium" style={{ color: "#78716C" }}>Image</th>
                   <th className="text-left px-5 py-3 font-medium" style={{ color: "#78716C" }}>Product</th>
                   <th className="text-left px-5 py-3 font-medium" style={{ color: "#78716C" }}>Amount</th>
                   <th className="text-left px-5 py-3 font-medium" style={{ color: "#78716C" }}>Order Status</th>
@@ -121,6 +122,14 @@ export default function MyOrdersPage() {
               <tbody>
                 {orders.map((order) => (
                   <tr key={order._id} style={{ borderBottom: "1px solid #E7E5E4" }}>
+                    <td className="px-5 py-3 font-medium" style={{ color: "#1C1917" }}>
+                      <div className="flex items-center gap-3">
+                        {order.productImage && (
+                          <img src={order.productImage} alt={order.productName} className="w-10 h-10 rounded-lg object-cover" />
+                        )}
+                        <span>{order.productName}</span>
+                      </div>
+                    </td>
                     <td className="px-5 py-3 font-medium" style={{ color: "#1C1917" }}>
                       {order.productName}
                     </td>

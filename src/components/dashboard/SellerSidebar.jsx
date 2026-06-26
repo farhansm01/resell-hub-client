@@ -52,7 +52,7 @@ export default function SellerSidebar({ onNavigate }) {
             {user?.name || "Loading..."}
           </span>
           {user?.role && (
-            <Chip size="sm" variant="flat" className="mt-1 h-5 w-fit bg-[#F97316]/15 text-[#C2410C] capitalize">
+            <Chip size="sm" variant="flat" className="rounded-full px-2 py-1 mt-1 w-fit bg-[#F97316]/15 text-[#C2410C] capitalize">
               {user.role}
             </Chip>
           )}
@@ -67,9 +67,8 @@ export default function SellerSidebar({ onNavigate }) {
               key={href}
               href={href}
               onClick={onNavigate}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                isActive ? "bg-[#F97316] text-white" : "text-[#78716C] hover:bg-[#F97316]/10 hover:text-[#1C1917]"
-              }`}
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive ? "bg-[#F97316] text-white" : "text-[#78716C] hover:bg-[#F97316]/10 hover:text-[#1C1917]"
+                }`}
             >
               <Icon className="shrink-0" width={20} height={20} />
               {label}

@@ -50,7 +50,7 @@ export default function ProductDetailsPage() {
     }
     setWishlistLoading(true);
     try {
-      await addToWishlist(user.email, id);
+      await addToWishlist(user.id, id);
       toast.success("Added to wishlist!");
     } catch (err) {
       // 409 means already in wishlist

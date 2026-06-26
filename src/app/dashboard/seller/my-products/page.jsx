@@ -146,7 +146,7 @@ export default function MyProductsPage() {
         const fetchProducts = async () => {
             try {
                 const data = await getMyProducts(sellerId);
-                setProducts(data);
+                setProducts(data.products);
             } catch (err) {
                 toast.error("Failed to load your products");
             } finally {

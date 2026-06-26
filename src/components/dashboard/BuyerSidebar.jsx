@@ -19,7 +19,7 @@ const NAV_LINKS = [
   { label: "My Orders", href: "/dashboard/buyer/my-orders", icon: FolderOpen },
   { label: "Wishlist", href: "/dashboard/buyer/wishlist", icon: Star },
   { label: "Payment History", href: "/dashboard/buyer/payment-history", icon: ChartColumn },
-  { label: "Write a Review", href: "/dashboard/buyer/review", icon: Thunderbolt },
+  { label: "Write a Review", href: "/dashboard/buyer/write-review", icon: Thunderbolt },
   { label: "Profile", href: "/dashboard/buyer/profile", icon: Person },
 ];
 
@@ -53,7 +53,7 @@ export default function BuyerSidebar({ onNavigate }) {
             {user?.name || "Loading..."}
           </span>
           {user?.role && (
-            <Chip size="sm" variant="flat" className="mt-1 h-5 w-fit bg-[#F97316]/15 text-[#C2410C] capitalize">
+            <Chip size="sm" variant="flat" className="text-sm rounded-lg px-2 py-1 mt-1 w-fit bg-[#F97316]/15 text-[#C2410C] capitalize">
               {user.role}
             </Chip>
           )}
@@ -68,9 +68,8 @@ export default function BuyerSidebar({ onNavigate }) {
               key={href}
               href={href}
               onClick={onNavigate}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                isActive ? "bg-[#F97316] text-white" : "text-[#78716C] hover:bg-[#F97316]/10 hover:text-[#1C1917]"
-              }`}
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive ? "bg-[#F97316] text-white" : "text-[#78716C] hover:bg-[#F97316]/10 hover:text-[#1C1917]"
+                }`}
             >
               <Icon className="shrink-0" width={20} height={20} />
               {label}

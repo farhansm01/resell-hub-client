@@ -17,6 +17,9 @@ export async function addToWishlist(userId, productId) {
 }
 
 
+
+
+
 // DELETE /api/wishlist/:wishlistId?userId= — remove item from wishlist
 export async function removeFromWishlist(wishlistId, userId) {
   const res = await fetch(`${BASE_URL}/api/wishlist/${wishlistId}?userId=${userId}`, {

@@ -90,7 +90,7 @@ export default function PaymentHistoryPage() {
                     {payment.transactionId}
                   </td>
                   <td className="px-5 py-3" style={{ color: "#1C1917" }}>${payment.amount}</td>
-                  <td className="px-5 py-3"><Badge status={payment.status} /></td>
+                  <td className="px-5 py-3"><Badge status={payment.paymentStatus} /></td>
                   <td className="px-5 py-3" style={{ color: "#78716C" }}>
                     {new Date(payment.createdAt).toLocaleDateString()}
                   </td>
