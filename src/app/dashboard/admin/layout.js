@@ -1,3 +1,4 @@
+// app/dashboard/admin/layout.js
 "use client";
 
 import { useState } from "react";
@@ -20,10 +21,15 @@ export default function AdminDashboardLayout({ children }) {
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#FAFAF9]">
-      <aside className="hidden lg:flex lg:w-[250px] lg:shrink-0 lg:flex-col border-r border-[#E7E5E4]">
+      {/* Desktop sidebar */}
+      <aside
+        className="hidden lg:flex lg:w-[250px] lg:shrink-0 lg:flex-col"
+        style={{ backgroundColor: "#1C1917" }}
+      >
         <AdminSidebar />
       </aside>
 
+      {/* Mobile drawer */}
       <Drawer isOpen={isDrawerOpen} onOpenChange={setIsDrawerOpen} placement="left" size="xs">
         <DrawerContent>
           <DrawerBody className="p-0">
@@ -32,17 +38,23 @@ export default function AdminDashboardLayout({ children }) {
         </DrawerContent>
       </Drawer>
 
+      {/* Main content */}
       <div className="flex flex-1 flex-col overflow-y-auto">
-        <header className="flex items-center gap-3 border-b border-[#E7E5E4] bg-white px-4 py-3 lg:hidden">
+        {/* Mobile header */}
+        <header
+          className="flex items-center gap-3 border-b px-4 py-3 lg:hidden"
+          style={{ backgroundColor: "#FFFFFF", borderColor: "#E7E5E4" }}
+        >
           <button
             onClick={() => setIsDrawerOpen(true)}
-            className="rounded-md p-2 text-[#1C1917] hover:bg-[#F97316]/10"
+            className="rounded-md p-2 transition-colors"
+            style={{ color: "#1C1917" }}
             aria-label="Open menu"
           >
             <Bars width={22} height={22} />
           </button>
-          <span className="font-bold text-[#1C1917]">
-            <span className="text-[#F97316]">ReSell</span>Hub
+          <span className="font-bold" style={{ color: "#1C1917" }}>
+            <span style={{ color: "#F97316" }}>ReSell</span>Hub
           </span>
         </header>
 

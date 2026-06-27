@@ -1,34 +1,58 @@
 // app/(main)/checkout/page.js
-
 "use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Button, Card, Input } from "@heroui/react";
 import { useSession } from "@/lib/auth-client";
 import { createCheckoutSession } from "@/lib/actions/products";
 import { toast } from "react-toastify";
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, isPending } = useSession();
   const user = session?.user;
 
-  // product read from sessionStorage
   const [product, setProduct] = useState(null);
-
-  // delivery form fields
   const [deliveryInfo, setDeliveryInfo] = useState({
     name: "",
     phone: "",
     address: "",
   });
-
   const [proceedLoading, setProceedLoading] = useState(false);
 
-  // on mount — read product from sessionStorage, redirect if missing
+  // ── Role guard — buyer only ──
   useEffect(() => {
+    if (isPending) return;
+
+    if (!session) {
+      router.replace("/signin");
+      return;
+    }
+
+    if (user?.role !== "buyer") {
+      router.replace("/unauthorized");
+      return;
+    }
+  }, [session, isPending, user, router]);
+  // ── Read product from sessionStorage — only run after role is confirmed ──
+  useEffect(() => {
+    // wait for auth to resolve
+    if (isPending) return;
+
+    // not logged in
+    if (!session) {
+      router.replace("/signin");
+      return;
+    }
+
+    // wrong role — seller/admin
+    if (user?.role !== "buyer") {
+      router.replace("/unauthorized");
+      return;
+    }
+
+    // confirmed buyer — now check sessionStorage
     const stored = sessionStorage.getItem("checkoutProduct");
     if (!stored) {
       router.push("/products");
@@ -39,16 +63,13 @@ export default function CheckoutPage() {
     } catch {
       router.push("/products");
     }
-  }, []);
+  }, [isPending, session, user, router]);
 
-  // handle delivery form field changes
   const handleChange = (field) => (e) => {
     setDeliveryInfo((prev) => ({ ...prev, [field]: e.target.value }));
   };
 
-  // proceed to payment — validate, call action, redirect to Stripe
   const handleProceed = async () => {
-    // validate all fields filled
     if (!deliveryInfo.name.trim() || !deliveryInfo.phone.trim() || !deliveryInfo.address.trim()) {
       toast.error("Please fill in all delivery fields");
       return;
@@ -69,10 +90,7 @@ export default function CheckoutPage() {
         deliveryInfo,
       });
 
-      // clear sessionStorage after successful session creation
       sessionStorage.removeItem("checkoutProduct");
-
-      // redirect to Stripe hosted checkout
       window.location.href = session_data.url;
     } catch (err) {
       toast.error(err.message || "Something went wrong");
@@ -80,12 +98,12 @@ export default function CheckoutPage() {
     }
   };
 
-  // loading state while sessionStorage is being read
-  if (!product) {
+  // ── Show spinner while auth is resolving or role is wrong ──
+  if (isPending || !session || user?.role !== "buyer" || !product) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div
-          className="animate-spin rounded-full h-10 w-10 border-4 border-t-transparent"
+          className="animate-spin rounded-full h-10 w-10 border-4"
           style={{ borderColor: "#F97316", borderTopColor: "transparent" }}
         />
       </div>
@@ -98,20 +116,18 @@ export default function CheckoutPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       className="max-w-5xl mx-auto px-4 py-10"
-      style={{ backgroundColor: "#FAFAF9" }}
     >
       {/* Page heading */}
       <h1 className="text-2xl font-bold mb-8" style={{ color: "#1C1917" }}>
         Checkout
       </h1>
 
-      {/* Two column layout — stacks on mobile */}
+      {/* Two column layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
         {/* ── Left — Order Summary ── */}
-        <Card
-          radius="md"
-          className="p-6 border shadow-none"
+        <div
+          className="rounded-xl p-6 border"
           style={{ backgroundColor: "#FFFFFF", borderColor: "#E7E5E4" }}
         >
           <h2 className="text-base font-semibold mb-5" style={{ color: "#1C1917" }}>
@@ -119,7 +135,10 @@ export default function CheckoutPage() {
           </h2>
 
           {/* Product image */}
-          <div className="rounded-xl overflow-hidden border mb-5" style={{ borderColor: "#E7E5E4" }}>
+          <div
+            className="rounded-xl overflow-hidden border mb-5"
+            style={{ borderColor: "#E7E5E4" }}
+          >
             <img
               src={product.image}
               alt={product.title}
@@ -146,7 +165,7 @@ export default function CheckoutPage() {
               <span className="text-sm font-medium" style={{ color: "#1C1917" }}>1</span>
             </div>
 
-            {/* Divider */}
+            {/* Divider + Total */}
             <div className="border-t pt-3" style={{ borderColor: "#E7E5E4" }}>
               <div className="flex justify-between items-center">
                 <span className="text-sm font-semibold" style={{ color: "#1C1917" }}>Total</span>
@@ -156,12 +175,11 @@ export default function CheckoutPage() {
               </div>
             </div>
           </div>
-        </Card>
+        </div>
 
         {/* ── Right — Delivery Information ── */}
-        <Card
-          radius="md"
-          className="p-6 border shadow-none"
+        <div
+          className="rounded-xl p-6 border"
           style={{ backgroundColor: "#FFFFFF", borderColor: "#E7E5E4" }}
         >
           <h2 className="text-base font-semibold mb-5" style={{ color: "#1C1917" }}>
@@ -170,62 +188,91 @@ export default function CheckoutPage() {
 
           <div className="space-y-4">
             {/* Full Name */}
-            <Input
-              radius="md"
-              label="Full Name"
-              placeholder="Enter your full name"
-              value={deliveryInfo.name}
-              onChange={handleChange("name")}
-              variant="bordered"
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium" style={{ color: "#1C1917" }}>
+                Full Name
+              </label>
+              <input
+                type="text"
+                placeholder="Enter your full name"
+                value={deliveryInfo.name}
+                onChange={handleChange("name")}
+                className="w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition focus:ring-2"
+                style={{
+                  borderColor: "#E7E5E4",
+                  color: "#1C1917",
+                  backgroundColor: "#FFFFFF",
+                }}
+                onFocus={(e) => (e.target.style.borderColor = "#F97316")}
+                onBlur={(e) => (e.target.style.borderColor = "#E7E5E4")}
+              />
+            </div>
 
             {/* Phone */}
-            <Input
-              radius="md"
-              label="Phone"
-              placeholder="Enter your phone number"
-              value={deliveryInfo.phone}
-              onChange={handleChange("phone")}
-              variant="bordered"
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium" style={{ color: "#1C1917" }}>
+                Phone
+              </label>
+              <input
+                type="text"
+                placeholder="Enter your phone number"
+                value={deliveryInfo.phone}
+                onChange={handleChange("phone")}
+                className="w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition"
+                style={{
+                  borderColor: "#E7E5E4",
+                  color: "#1C1917",
+                  backgroundColor: "#FFFFFF",
+                }}
+                onFocus={(e) => (e.target.style.borderColor = "#F97316")}
+                onBlur={(e) => (e.target.style.borderColor = "#E7E5E4")}
+              />
+            </div>
 
             {/* Address */}
-            <Input
-              radius="md"
-              label="Address"
-              placeholder="Enter your delivery address"
-              value={deliveryInfo.address}
-              onChange={handleChange("address")}
-              variant="bordered"
-            />
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium" style={{ color: "#1C1917" }}>
+                Address
+              </label>
+              <input
+                type="text"
+                placeholder="Enter your delivery address"
+                value={deliveryInfo.address}
+                onChange={handleChange("address")}
+                className="w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition"
+                style={{
+                  borderColor: "#E7E5E4",
+                  color: "#1C1917",
+                  backgroundColor: "#FFFFFF",
+                }}
+                onFocus={(e) => (e.target.style.borderColor = "#F97316")}
+                onBlur={(e) => (e.target.style.borderColor = "#E7E5E4")}
+              />
+            </div>
           </div>
 
           {/* Action buttons */}
           <div className="flex gap-3 mt-6">
             {/* Cancel */}
-            <Button
-              radius="md"
-              variant="bordered"
-              onPress={() => router.push("/products")}
-              className="flex-1 font-semibold"
+            <button
+              onClick={() => router.push("/products")}
+              className="flex-1 rounded-lg border py-2.5 text-sm font-semibold transition hover:bg-[#F5F5F4]"
               style={{ borderColor: "#E7E5E4", color: "#78716C" }}
             >
               Cancel
-            </Button>
+            </button>
 
             {/* Proceed to Payment */}
-            <Button
-              radius="md"
-              onPress={handleProceed}
-              isLoading={proceedLoading}
+            <button
+              onClick={handleProceed}
               disabled={proceedLoading}
-              className="flex-1 font-semibold text-white"
-              style={{ backgroundColor: "#F97316" }}
+              className="flex-1 rounded-lg py-2.5 text-sm font-semibold text-white transition disabled:opacity-60"
+              style={{ backgroundColor: proceedLoading ? "#C2410C" : "#F97316" }}
             >
               {proceedLoading ? "Processing..." : "Proceed to Payment"}
-            </Button>
+            </button>
           </div>
-        </Card>
+        </div>
       </div>
     </motion.div>
   );
