@@ -11,6 +11,7 @@ import { useSession } from "@/lib/auth-client";
 import { getProductById } from "@/lib/api/products";
 import { getReviewsByProduct } from "@/lib/api/reviews";
 import { addToWishlist } from "@/lib/actions/wishlist";
+import { saveRecentlyViewed, getRecentlyViewed } from "@/lib/recentlyViewed";
 import { toast } from "react-toastify";
 
 export default function ProductDetailsPage() {
@@ -23,7 +24,7 @@ export default function ProductDetailsPage() {
   const [reviews, setReviews] = useState([]);
   const [productLoading, setProductLoading] = useState(true);
   const [wishlistLoading, setWishlistLoading] = useState(false);
-  
+  const [recentlyViewed, setRecentlyViewed] = useState([]);
 
   // fetch product and reviews on mount
   useEffect(() => {
@@ -38,6 +39,27 @@ export default function ProductDetailsPage() {
       .then(setReviews)
       .catch(() => setReviews([]));
   }, [id]);
+
+ // once product loads AND auth state resolves — save to the correct identity-scoped bucket
+useEffect(() => {
+  if (!product) return;
+
+  saveRecentlyViewed(
+    {
+      _id: product._id,
+      title: product.title,
+      image: product.image,
+      price: product.price,
+      category: product.category,
+      condition: product.condition,
+    },
+    user?.id
+  );
+
+  setRecentlyViewed(
+    getRecentlyViewed(user?.id).filter((p) => p._id !== product._id)
+  );
+}, [product, user?.id]);
 
 
 
@@ -274,6 +296,57 @@ export default function ProductDetailsPage() {
           </div>
         )}
       </div>
+
+      {/* ── Recently Viewed section ── */}
+      {recentlyViewed.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="mt-12"
+        >
+          <h2 className="text-lg font-bold mb-6" style={{ color: "#1C1917" }}>
+            Recently Viewed
+          </h2>
+
+          {/* horizontal scroll row on mobile, grid on sm+ (negative margin lets cards bleed to screen edge while scrolling) */}
+          <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible">
+            {recentlyViewed.map((item) => (
+              <div
+                key={item._id}
+                onClick={() => router.push(`/products/${item._id}`)}
+                className="rounded-xl border overflow-hidden cursor-pointer shrink-0 w-40 sm:w-full transition-shadow hover:shadow-md"
+                style={{ borderColor: "#E7E5E4", backgroundColor: "#FFFFFF" }}
+              >
+                {/* Image */}
+                <div className="w-full h-32 overflow-hidden bg-gray-50">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+
+                {/* Body */}
+                <div className="p-3 space-y-1.5">
+                  <h4 className="text-sm font-semibold line-clamp-1" style={{ color: "#1C1917" }}>
+                    {item.title}
+                  </h4>
+                  <span
+                    className="inline-block text-xs px-2 py-0.5 rounded-full font-medium"
+                    style={{ backgroundColor: "#FFF7ED", color: "#F97316" }}
+                  >
+                    {item.category}
+                  </span>
+                  <p className="text-sm font-bold" style={{ color: "#F97316" }}>
+                    ${item.price.toLocaleString()}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 }
