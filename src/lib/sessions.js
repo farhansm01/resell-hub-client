@@ -1,18 +1,18 @@
-// In useRoleGuard.js
+// src/lib/sessions.js
 import { useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation"; // add usePathname
+import { useRouter, usePathname } from "next/navigation";
 import { useSession } from "@/lib/auth-client";
 
 export function useRoleGuard(allowedRole) {
   const { data: session, isPending } = useSession();
   const router = useRouter();
-  const pathname = usePathname(); // add this
+  const pathname = usePathname();
 
   useEffect(() => {
     if (isPending) return;
 
     if (!session) {
-      // Only redirect to signin if still inside a dashboard route
+      // Not logged in — send to signin
       if (pathname.startsWith("/dashboard")) {
         router.replace("/signin");
       }
@@ -20,9 +20,10 @@ export function useRoleGuard(allowedRole) {
     }
 
     if (session.user?.role !== allowedRole) {
-      router.replace(`/dashboard/${session.user?.role}`);
+      // Logged in but wrong role — send to unauthorized
+      router.replace("/unauthorized");
     }
-  }, [session, isPending, allowedRole, router, pathname]); // add pathname
+  }, [session, isPending, allowedRole, router, pathname]);
 
   return { session, isLoading: isPending || session?.user?.role !== allowedRole };
 }

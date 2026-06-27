@@ -30,9 +30,9 @@ export default function SellerSidebar({ onNavigate }) {
 
   const handleSignOut = async () => {
     try {
+      router.push("/"); // push FIRST
       await authClient.signOut();
       toast.success("Signed out successfully");
-      router.push("/");
     } catch (err) {
       toast.error("Failed to sign out");
     }
