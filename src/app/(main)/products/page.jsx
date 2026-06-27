@@ -5,7 +5,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Magnifier } from "@gravity-ui/icons";
+import { Magnifier, Xmark } from "@gravity-ui/icons";
 import { getProducts } from "@/lib/api/products";
 import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
 
@@ -15,6 +15,7 @@ const SORT_OPTIONS = [
     { label: "Price: Low to High", value: "price_asc" },
     { label: "Price: High to Low", value: "price_desc" },
 ];
+const CONDITIONS = ["All", "Used", "Like New", "Refurbished"];
 
 export default function AllProductsPage() {
     const router = useRouter();
@@ -28,10 +29,14 @@ export default function AllProductsPage() {
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [category, setCategory] = useState("all");
     const [sort, setSort] = useState("");
+    const [minPrice, setMinPrice] = useState("");
+    const [maxPrice, setMaxPrice] = useState("");
+    const [condition, setCondition] = useState("all");
 
     // dropdowns open state
     const [categoryOpen, setCategoryOpen] = useState(false);
     const [sortOpen, setSortOpen] = useState(false);
+    const [conditionOpen, setConditionOpen] = useState(false);
 
     // debounce search input 300ms
     useEffect(() => {
@@ -48,6 +53,9 @@ export default function AllProductsPage() {
                 category,
                 sort,
                 page: currentPage,
+                minPrice,
+                maxPrice,
+                condition,
             });
             setProducts(data.products || []);
             setTotalPages(data.totalPages || 1);
@@ -57,16 +65,16 @@ export default function AllProductsPage() {
         } finally {
             setLoading(false);
         }
-    }, [debouncedSearch, category, sort, currentPage]);
+    }, [debouncedSearch, category, sort, currentPage, minPrice, maxPrice, condition]);
 
     useEffect(() => {
         fetchProducts();
     }, [fetchProducts]);
 
-    // reset to page 1 when filters change
+    // reset to page 1 when any filter changes
     useEffect(() => {
         setCurrentPage(1);
-    }, [debouncedSearch, category, sort]);
+    }, [debouncedSearch, category, sort, minPrice, maxPrice, condition]);
 
     // condition badge color
     const conditionColor = (condition) => {
@@ -74,6 +82,21 @@ export default function AllProductsPage() {
         if (condition === "Good") return "#CA8A04";
         return "#78716C";
     };
+
+    // reset all filters back to default
+    const clearFilters = () => {
+        setSearch("");
+        setCategory("all");
+        setSort("");
+        setMinPrice("");
+        setMaxPrice("");
+        setCondition("all");
+        setCurrentPage(1);
+    };
+
+    // true if any filter is actively narrowing results
+    const hasActiveFilters =
+        search || category !== "all" || sort || minPrice || maxPrice || condition !== "all";
 
     return (
         <div className="min-h-screen px-4 py-10 max-w-7xl mx-auto" style={{ backgroundColor: "#FAFAF9" }}>
@@ -85,10 +108,11 @@ export default function AllProductsPage() {
             </div>
 
             {/* ── Filter bar ── */}
-            <div className="flex flex-col sm:flex-row gap-3 mb-8">
+            {/* flex-wrap: sits in one row on wide screens, wraps to multiple rows as space shrinks */}
+            <div className="flex flex-wrap gap-3 mb-8">
 
-                {/* Search input */}
-                <div className="relative flex-1">
+                {/* Search input — flexible, grows to fill leftover space in its row */}
+                <div className="relative flex-1 min-w-[200px]">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "#78716C" }}>
                         <Magnifier width={16} height={16} />
                     </span>
@@ -103,10 +127,10 @@ export default function AllProductsPage() {
                 </div>
 
                 {/* Category dropdown */}
-                <div className="relative">
+                <div className="relative w-full sm:w-44">
                     <button
-                        onClick={() => { setCategoryOpen((p) => !p); setSortOpen(false); }}
-                        className="w-full sm:w-44 px-4 py-2.5 rounded-xl border text-sm text-left flex items-center justify-between"
+                        onClick={() => { setCategoryOpen((p) => !p); setSortOpen(false); setConditionOpen(false); }}
+                        className="w-full px-4 py-2.5 rounded-xl border text-sm text-left flex items-center justify-between"
                         style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
                     >
                         <span>{category === "all" ? "All Categories" : category}</span>
@@ -129,10 +153,10 @@ export default function AllProductsPage() {
                 </div>
 
                 {/* Sort dropdown */}
-                <div className="relative">
+                <div className="relative w-full sm:w-44">
                     <button
-                        onClick={() => { setSortOpen((p) => !p); setCategoryOpen(false); }}
-                        className="w-full sm:w-44 px-4 py-2.5 rounded-xl border text-sm text-left flex items-center justify-between"
+                        onClick={() => { setSortOpen((p) => !p); setCategoryOpen(false); setConditionOpen(false); }}
+                        className="w-full px-4 py-2.5 rounded-xl border text-sm text-left flex items-center justify-between"
                         style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
                     >
                         <span>{SORT_OPTIONS.find((o) => o.value === sort)?.label || "Sort By"}</span>
@@ -153,6 +177,64 @@ export default function AllProductsPage() {
                         </div>
                     )}
                 </div>
+
+                {/* Condition dropdown */}
+                <div className="relative w-full sm:w-40">
+                    <button
+                        onClick={() => { setConditionOpen((p) => !p); setCategoryOpen(false); setSortOpen(false); }}
+                        className="w-full px-4 py-2.5 rounded-xl border text-sm text-left flex items-center justify-between"
+                        style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
+                    >
+                        <span>{condition === "all" ? "All Conditions" : condition}</span>
+                        <span style={{ color: "#78716C" }}>▾</span>
+                    </button>
+                    {conditionOpen && (
+                        <div className="absolute z-20 mt-1 w-full rounded-xl border shadow-lg overflow-hidden" style={{ borderColor: "#E7E5E4", backgroundColor: "#FFFFFF" }}>
+                            {CONDITIONS.map((c) => (
+                                <button
+                                    key={c}
+                                    onClick={() => { setCondition(c.toLowerCase() === "all" ? "all" : c); setConditionOpen(false); }}
+                                    className="w-full px-4 py-2 text-sm text-left hover:bg-orange-50 transition-colors"
+                                    style={{ color: "#1C1917" }}
+                                >
+                                    {c}
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {/* Price range — grouped so min/max stay together when wrapping */}
+                <div className="flex gap-2 w-full sm:w-auto">
+                    <input
+                        type="number"
+                        value={minPrice}
+                        onChange={(e) => setMinPrice(e.target.value)}
+                        placeholder="Min ৳"
+                        className="w-full sm:w-24 px-3 py-2.5 rounded-xl border text-sm outline-none transition-colors focus:border-orange-400"
+                        style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
+                    />
+                    <input
+                        type="number"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(e.target.value)}
+                        placeholder="Max ৳"
+                        className="w-full sm:w-24 px-3 py-2.5 rounded-xl border text-sm outline-none transition-colors focus:border-orange-400"
+                        style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
+                    />
+                </div>
+
+                {/* Clear Filters — only shown when something is actually filtering results */}
+                {hasActiveFilters && (
+                    <button
+                        onClick={clearFilters}
+                        className="flex items-center justify-center gap-1.5 w-full sm:w-auto px-4 py-2.5 rounded-xl border text-sm font-medium transition-colors hover:bg-orange-50"
+                        style={{ borderColor: "#E7E5E4", color: "#78716C" }}
+                    >
+                        <Xmark width={14} height={14} />
+                        Clear Filters
+                    </button>
+                )}
             </div>
 
             {/* ── Product grid ── */}

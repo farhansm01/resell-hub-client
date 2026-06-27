@@ -2,14 +2,26 @@
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
-// GET /api/products — with search, category, sort, pagination
-export async function getProducts({ search = "", category = "", sort = "", page = 1, limit = 9 } = {}) {
+// GET /api/products — with search, category, sort, price range, condition, pagination
+export async function getProducts({
+  search = "",
+  category = "",
+  sort = "",
+  page = 1,
+  limit = 9,
+  minPrice = "",
+  maxPrice = "",
+  condition = "",
+} = {}) {
   const params = new URLSearchParams({
     ...(search && { search }),
     ...(category && category !== "all" && { category }),
     ...(sort && { sort }),
     page,
     limit,
+    ...(minPrice && { minPrice }),
+    ...(maxPrice && { maxPrice }),
+    ...(condition && condition !== "all" && { condition }),
   });
 
   const res = await fetch(`${BASE_URL}/api/products?${params}`);
