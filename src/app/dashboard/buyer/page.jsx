@@ -53,6 +53,8 @@ export default function BuyerOverviewPage() {
 
   const recentOrders = orders.slice(0, 3);
 
+  console.log("BASE_URL:", process.env.NEXT_PUBLIC_BASE_URL)
+
   if (isLoading) {
     return (
       <div className="flex h-64 items-center justify-center">
