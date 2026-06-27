@@ -79,6 +79,7 @@ export default function PaymentHistoryPage() {
               <tr style={{ borderBottom: "1px solid #E7E5E4" }}>
                 <th className="text-left px-5 py-3 font-medium" style={{ color: "#78716C" }}>Transaction ID</th>
                 <th className="text-left px-5 py-3 font-medium" style={{ color: "#78716C" }}>Amount</th>
+                <th className="text-left px-5 py-3 font-medium" style={{ color: "#78716C" }}>Method</th>
                 <th className="text-left px-5 py-3 font-medium" style={{ color: "#78716C" }}>Status</th>
                 <th className="text-left px-5 py-3 font-medium" style={{ color: "#78716C" }}>Date</th>
               </tr>
@@ -90,6 +91,9 @@ export default function PaymentHistoryPage() {
                     {payment.transactionId}
                   </td>
                   <td className="px-5 py-3" style={{ color: "#1C1917" }}>${payment.amount}</td>
+                  <td className="px-5 py-3 capitalize" style={{ color: "#1C1917" }}>
+                    {payment.paymentMethod || "Stripe"}
+                  </td>
                   <td className="px-5 py-3"><Badge status={payment.paymentStatus} /></td>
                   <td className="px-5 py-3" style={{ color: "#78716C" }}>
                     {new Date(payment.createdAt).toLocaleDateString()}
