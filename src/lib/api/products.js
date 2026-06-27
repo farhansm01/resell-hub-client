@@ -30,3 +30,10 @@ export async function getMyProducts(sellerId) {
   if (!res.ok) throw new Error("Failed to fetch your products");
   return res.json();
 }
+
+// GET /api/products/categories — distinct categories with product count
+export async function getCategories() {
+  const res = await fetch(`${BASE_URL}/api/products/categories`);
+  if (!res.ok) throw new Error("Failed to fetch categories");
+  return res.json();
+}
