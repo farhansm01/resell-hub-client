@@ -8,23 +8,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowRight } from "@gravity-ui/icons";
 import { getProducts } from "@/lib/api/products";
-
-// Skeleton placeholder card while loading
-function SkeletonCard() {
-  return (
-    <div
-      className="rounded-xl border animate-pulse overflow-hidden"
-      style={{ borderColor: "#E7E5E4", backgroundColor: "#FFFFFF" }}
-    >
-      <div className="w-full h-48" style={{ backgroundColor: "#E7E5E4" }} />
-      <div className="p-4 space-y-3">
-        <div className="h-4 rounded" style={{ backgroundColor: "#E7E5E4" }} />
-        <div className="h-3 w-2/3 rounded" style={{ backgroundColor: "#E7E5E4" }} />
-        <div className="h-4 w-1/3 rounded" style={{ backgroundColor: "#E7E5E4" }} />
-      </div>
-    </div>
-  );
-}
+import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
 
 export default function FeaturedProducts() {
   const router = useRouter();
@@ -91,7 +75,7 @@ export default function FeaturedProducts() {
         {/* Product grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {loading
-            ? Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)
+            ? Array.from({ length: 6 }).map((_, i) => <ProductCardSkeleton key={i} />)
             : products.map((product, i) => (
                 <motion.div
                   key={product._id}

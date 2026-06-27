@@ -7,23 +7,7 @@ import { toast } from "react-toastify";
 import { ArrowLeft } from "@gravity-ui/icons";
 import { getProducts } from "@/lib/api/products";
 import ProductCard from "@/components/products/ProductCard";
-
-// skeleton reused from products page style
-function SkeletonCard() {
-  return (
-    <div
-      className="rounded-xl border animate-pulse overflow-hidden"
-      style={{ borderColor: "#E7E5E4", backgroundColor: "#FFFFFF" }}
-    >
-      <div className="w-full h-48" style={{ backgroundColor: "#E7E5E4" }} />
-      <div className="p-4 space-y-3">
-        <div className="h-4 rounded" style={{ backgroundColor: "#E7E5E4" }} />
-        <div className="h-3 w-2/3 rounded" style={{ backgroundColor: "#E7E5E4" }} />
-        <div className="h-4 w-1/3 rounded" style={{ backgroundColor: "#E7E5E4" }} />
-      </div>
-    </div>
-  );
-}
+import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
 
 export default function CategoryProductsPage() {
   const { name } = useParams();
@@ -76,7 +60,7 @@ export default function CategoryProductsPage() {
       {/* Grid */}
       {isLoading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+          {Array.from({ length: 6 }).map((_, i) => <ProductCardSkeleton key={i} />)}
         </div>
       ) : products.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-24 gap-2">

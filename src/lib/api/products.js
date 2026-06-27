@@ -37,3 +37,10 @@ export async function getCategories() {
   if (!res.ok) throw new Error("Failed to fetch categories");
   return res.json();
 }
+
+// GET /api/stats — platform statistics for home page
+export async function getStats() {
+  const res = await fetch(`${BASE_URL}/api/stats`);
+  if (!res.ok) throw new Error("Failed to fetch stats");
+  return res.json();
+}
