@@ -1,9 +1,15 @@
+import { getAuthToken } from "@/lib/auth-client";
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
 export async function cancelOrder(orderId, buyerId) {
+  const token = await getAuthToken();
   const res = await fetch(`${BASE_URL}/api/orders/${orderId}/cancel`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify({ buyerId }),
   });
   if (!res.ok) {
@@ -14,9 +20,13 @@ export async function cancelOrder(orderId, buyerId) {
 }
 
 export async function createOrder(data) {
+  const token = await getAuthToken();
   const res = await fetch(`${BASE_URL}/api/orders`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify(data),
   });
   if (!res.ok) {
@@ -27,9 +37,13 @@ export async function createOrder(data) {
 }
 
 export async function updateOrderStatus(orderId, sellerId, orderStatus) {
+  const token = await getAuthToken();
   const res = await fetch(`${BASE_URL}/api/orders/${orderId}/status`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify({ sellerId, orderStatus }),
   });
   if (!res.ok) {

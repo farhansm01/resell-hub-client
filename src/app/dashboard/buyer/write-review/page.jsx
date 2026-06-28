@@ -26,8 +26,17 @@ export default function WriteReviewPage() {
 
     getBuyerOrders(user.id)
       .then((data) => {
-        // only delivered orders make sense to review
-        setOrders(data.filter((o) => o.orderStatus !== "cancelled"));
+        const filtered = data.filter((o) => o.orderStatus !== "cancelled");
+
+        // deduplicate by productId — keep only first occurrence
+        const seen = new Set();
+        const unique = filtered.filter((o) => {
+          if (seen.has(o.productId)) return false;
+          seen.add(o.productId);
+          return true;
+        });
+
+        setOrders(unique);
       })
       .catch(() => toast.error("Failed to load orders"))
       .finally(() => setIsLoading(false));

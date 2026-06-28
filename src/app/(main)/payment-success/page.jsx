@@ -1,8 +1,9 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { stripe } from '@/lib/stripe'
-import { createOrder } from '@/lib/actions/orders'
-import { createPayment } from '@/lib/actions/payments'
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:5000'
+const INTERNAL_SECRET = process.env.INTERNAL_API_SECRET
 
 export default async function PaymentSuccessPage({ searchParams }) {
   const { session_id } = await searchParams
@@ -15,36 +16,51 @@ export default async function PaymentSuccessPage({ searchParams }) {
   if (session.status !== 'complete') redirect('/products')
 
   const {
-    productId, buyerId, buyerName, buyerEmail,
+    productId, productTitle,  // ← add productTitle
+    buyerId, buyerName, buyerEmail,
     sellerId, sellerName, sellerEmail,
-    // delivery info added in Step 4
     deliveryName, deliveryPhone, deliveryAddress,
   } = session.metadata
 
   const amount = session.amount_total / 100
   const transactionId = session.payment_intent?.id || session.id
 
-  // create order — server dedupes on stripeSessionId
-  const order = await createOrder({
-    productId, buyerId, buyerName, buyerEmail,
-    sellerId, sellerName, sellerEmail,
-    amount,
-    stripeSessionId: session.id,
-    // pass delivery info to Express
-    deliveryInfo: {
-      name: deliveryName || '',
-      phone: deliveryPhone || '',
-      address: deliveryAddress || '',
+  // internal server-to-server call — uses INTERNAL_API_SECRET instead of JWT
+  const orderRes = await fetch(`${BASE_URL}/api/orders`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Internal ${INTERNAL_SECRET}`,
     },
+    body: JSON.stringify({
+       productId, productTitle,  // ← add this
+  buyerId, buyerName, buyerEmail,
+  sellerId, sellerName, sellerEmail,
+  amount,
+      stripeSessionId: session.id,
+      deliveryInfo: {
+        name: deliveryName || '',
+        phone: deliveryPhone || '',
+        address: deliveryAddress || '',
+      },
+    }),
   })
+  const order = await orderRes.json()
 
-  // create payment record — server dedupes on transactionId
-  await createPayment({
-    orderId: order._id,
-    transactionId,
-    buyerId,
-    amount,
-    paymentDate: new Date(),
+  // internal server-to-server call
+  await fetch(`${BASE_URL}/api/payments`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Internal ${INTERNAL_SECRET}`,
+    },
+    body: JSON.stringify({
+      orderId: order._id,
+      transactionId,
+      buyerId,
+      amount,
+      paymentDate: new Date(),
+    }),
   })
 
   return (
@@ -65,7 +81,6 @@ export default async function PaymentSuccessPage({ searchParams }) {
           <span style={{ color: '#78716C' }}>Transaction ID</span>
           <span className="font-mono text-xs" style={{ color: '#1C1917' }}>{transactionId}</span>
         </div>
-        {/* show delivery info if available */}
         {deliveryName && (
           <div className="border-t pt-3 mt-3 space-y-2" style={{ borderColor: '#E7E5E4' }}>
             <p className="text-xs font-semibold uppercase tracking-wide mb-1" style={{ color: '#78716C' }}>
@@ -91,7 +106,7 @@ export default async function PaymentSuccessPage({ searchParams }) {
         <Link href="/dashboard/buyer/my-orders" className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white" style={{ backgroundColor: '#F97316' }}>
           View My Orders
         </Link>
-        <Link href="/products" className="px-5 py-2.5 rounded-xl text-sm font-semibold border" style={{ borderColor: '#E7E5E4', color: '#1C1913' }}>
+        <Link href="/products" className="px-5 py-2.5 rounded-xl text-sm font-semibold border" style={{ borderColor: '#E7E5E4', color: '#1C1917' }}>
           Continue Shopping
         </Link>
       </div>

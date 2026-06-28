@@ -78,13 +78,15 @@ export default function AppNavbar() {
                     {session.user?.email}
                   </p>
                   <hr style={{ borderColor: "#E7E5E4" }} />
-                  <Link
-                    href="/dashboard/profile"
-                    className="block px-4 py-2 text-sm hover:bg-orange-50 transition"
-                    style={{ color: "#1C1917" }}
-                  >
-                    Profile Settings
-                  </Link>
+                  {session.user?.role === "buyer" && (
+                    <Link
+                      href="/dashboard/buyer/profile"
+                      className="block px-4 py-2 text-sm hover:bg-orange-50 transition"
+                      style={{ color: "#1C1917" }}
+                    >
+                      Profile Settings
+                    </Link>
+                  )}
                   <button
                     onClick={handleSignOut}
                     className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm hover:bg-red-50 transition"

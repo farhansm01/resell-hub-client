@@ -1,7 +1,21 @@
 import { createAuthClient } from "better-auth/react"
+
 export const authClient = createAuthClient({
-    /** The base URL of the server (optional if you're using the same domain) */
-    baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL
+  baseURL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL
 })
 
-export const { signIn, signUp, useSession, signOut  } = authClient;
+export const { signIn, signUp, useSession, signOut } = authClient;
+
+// get JWT token for sending with API requests
+export async function getAuthToken() {
+  try {
+    const res = await fetch('/api/auth/token', {
+      credentials: 'include'
+    })
+    if (!res.ok) return null
+    const json = await res.json()
+    return json.token || null
+  } catch {
+    return null
+  }
+}

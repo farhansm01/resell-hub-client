@@ -109,8 +109,25 @@ export default function BuyerOverviewPage() {
                 className="rounded-2xl p-4"
                 style={{ backgroundColor: "#FFFFFF", border: "1px solid #E7E5E4" }}
               >
+                {/* show image if available */}
+                {order.productImage ? (
+                  <img
+                    src={order.productImage}
+                    alt={order.productName}
+                    className="w-full h-28 object-cover rounded-xl mb-3"
+                  />
+                ) : (
+                  <div
+                    className="w-full h-28 rounded-xl mb-3 flex items-center justify-center text-2xl"
+                    style={{ backgroundColor: "#F5F5F4" }}
+                  >
+                    📦
+                  </div>
+                )}
                 <p className="font-medium truncate" style={{ color: "#1C1917" }}>
-                  {order.productName}
+                  {order.productName && order.productName !== "Product unavailable"
+                    ? order.productName
+                    : "Item no longer available"}
                 </p>
                 <p className="text-sm mt-1" style={{ color: "#78716C" }}>
                   ${order.amount} · {new Date(order.createdAt).toLocaleDateString()}

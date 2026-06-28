@@ -1,10 +1,15 @@
+import { getAuthToken } from "@/lib/auth-client";
+
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
 
-// POST /api/payments — record payment after successful Stripe checkout
 export async function createPayment(data) {
+  const token = await getAuthToken();
   const res = await fetch(`${BASE_URL}/api/payments`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify(data),
   });
   if (!res.ok) {

@@ -36,13 +36,13 @@ export async function POST(request) {
       // metadata values MUST be strings - Stripe rejects non-string values
       metadata: {
         productId: String(productId),
+        productTitle: productTitle || '',        // ← add this
         buyerId: String(buyerId),
         buyerName: buyerName || '',
         buyerEmail: buyerEmail || '',
         sellerId: String(sellerId),
         sellerName: sellerName || '',
         sellerEmail: sellerEmail || '',
-        // delivery info from checkout form
         deliveryName: deliveryInfo?.name || '',
         deliveryPhone: deliveryInfo?.phone || '',
         deliveryAddress: deliveryInfo?.address || '',
