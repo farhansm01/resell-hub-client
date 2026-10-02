@@ -40,6 +40,7 @@ export default function FeedbackPage() {
         role: userRole,
         rating,
         comment: comment.trim(),
+        image: session.user.image || session.user.avatar || "",
       });
 
       toast.success("Thank you! Your feedback has been submitted for moderation.");
@@ -136,9 +137,17 @@ export default function FeedbackPage() {
             {/* Logged In User Verified Info Bar */}
             <div className="flex items-center justify-between p-4 rounded-2xl bg-[#fdf6ea] border border-[#f1b055]/35 mb-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-[#18020c] text-[#f1b055] font-black flex items-center justify-center text-sm shadow-xs">
-                  {session.user.name ? session.user.name[0].toUpperCase() : "U"}
-                </div>
+                {session.user.image || session.user.avatar ? (
+                  <img
+                    src={session.user.image || session.user.avatar}
+                    alt={session.user.name || "User"}
+                    className="w-10 h-10 rounded-full object-cover border border-[#f1b055]/40 shadow-xs"
+                  />
+                ) : (
+                  <div className="w-10 h-10 rounded-full bg-[#18020c] text-[#f1b055] font-black flex items-center justify-center text-sm shadow-xs">
+                    {session.user.name ? session.user.name[0].toUpperCase() : "U"}
+                  </div>
+                )}
                 <div>
                   <p className="font-bold text-sm text-[#18020c]">
                     {session.user.name}

@@ -7,7 +7,20 @@ import { motion, AnimatePresence } from "framer-motion";
 import { StarFill, Comments } from "@gravity-ui/icons";
 import { getApprovedFeedback } from "@/lib/api/feedback";
 
-function InitialsAvatar({ name }) {
+function UserAvatar({ name, image }) {
+  const [imgError, setImgError] = useState(false);
+
+  if (image && !imgError) {
+    return (
+      <img
+        src={image}
+        alt={name || "User"}
+        onError={() => setImgError(true)}
+        className="shrink-0 w-12 h-12 rounded-full object-cover shadow-xs border border-[#f1b055]/40"
+      />
+    );
+  }
+
   const initials = (name || "User")
     .split(" ")
     .map((n) => n[0])
@@ -148,7 +161,10 @@ export default function SuccessStories() {
                 >
                   <div>
                     <div className="flex items-center gap-3 mb-3">
-                      <InitialsAvatar name={feedbackList[prevIdx]?.name} />
+                      <UserAvatar
+                        name={feedbackList[prevIdx]?.name}
+                        image={feedbackList[prevIdx]?.image || feedbackList[prevIdx]?.avatar || feedbackList[prevIdx]?.userImage}
+                      />
                       <div className="truncate">
                         <h4 className="font-bold text-sm text-[#18020c] truncate">
                           {feedbackList[prevIdx]?.name}
@@ -206,7 +222,10 @@ export default function SuccessStories() {
                     <div>
                       <div className="flex items-center justify-between gap-4 mb-5 pt-2">
                         <div className="flex items-center gap-3.5">
-                          <InitialsAvatar name={feedbackList[activeIdx]?.name} />
+                          <UserAvatar
+                            name={feedbackList[activeIdx]?.name}
+                            image={feedbackList[activeIdx]?.image || feedbackList[activeIdx]?.avatar || feedbackList[activeIdx]?.userImage}
+                          />
                           <div>
                             <h3 className="font-black text-lg text-[#18020c]">
                               {feedbackList[activeIdx]?.name}
@@ -266,7 +285,10 @@ export default function SuccessStories() {
                 >
                   <div>
                     <div className="flex items-center gap-3 mb-3">
-                      <InitialsAvatar name={feedbackList[nextIdx]?.name} />
+                      <UserAvatar
+                        name={feedbackList[nextIdx]?.name}
+                        image={feedbackList[nextIdx]?.image || feedbackList[nextIdx]?.avatar || feedbackList[nextIdx]?.userImage}
+                      />
                       <div className="truncate">
                         <h4 className="font-bold text-sm text-[#18020c] truncate">
                           {feedbackList[nextIdx]?.name}
@@ -309,7 +331,10 @@ export default function SuccessStories() {
                 >
                   <div className="flex items-center justify-between gap-3 mb-4">
                     <div className="flex items-center gap-3">
-                      <InitialsAvatar name={feedbackList[activeIdx]?.name} />
+                      <UserAvatar
+                        name={feedbackList[activeIdx]?.name}
+                        image={feedbackList[activeIdx]?.image || feedbackList[activeIdx]?.avatar || feedbackList[activeIdx]?.userImage}
+                      />
                       <div>
                         <h3 className="font-bold text-base text-[#18020c]">
                           {feedbackList[activeIdx]?.name}
