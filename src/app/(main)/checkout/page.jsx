@@ -21,7 +21,6 @@ export default function CheckoutPage() {
   });
   const [proceedLoading, setProceedLoading] = useState(false);
 
-  // ── Role guard — buyer only ──
   useEffect(() => {
     if (isPending) return;
 
@@ -35,24 +34,20 @@ export default function CheckoutPage() {
       return;
     }
   }, [session, isPending, user, router]);
-  // ── Read product from sessionStorage — only run after role is confirmed ──
+
   useEffect(() => {
-    // wait for auth to resolve
     if (isPending) return;
 
-    // not logged in
     if (!session) {
       router.replace("/signin");
       return;
     }
 
-    // wrong role — seller/admin
     if (user?.role !== "buyer") {
       router.replace("/unauthorized");
       return;
     }
 
-    // confirmed buyer — now check sessionStorage
     const stored = sessionStorage.getItem("checkoutProduct");
     if (!stored) {
       router.push("/products");
@@ -98,13 +93,12 @@ export default function CheckoutPage() {
     }
   };
 
-  // ── Show spinner while auth is resolving or role is wrong ──
   if (isPending || !session || user?.role !== "buyer" || !product) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div
           className="animate-spin rounded-full h-10 w-10 border-4"
-          style={{ borderColor: "#F97316", borderTopColor: "transparent" }}
+          style={{ borderColor: "#f1b055", borderTopColor: "transparent" }}
         />
       </div>
     );
@@ -116,28 +110,26 @@ export default function CheckoutPage() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       className="max-w-5xl mx-auto px-4 py-10"
+      style={{ backgroundColor: "#ffffff" }}
     >
-      {/* Page heading */}
-      <h1 className="text-2xl font-bold mb-8" style={{ color: "#1C1917" }}>
+      <h1 className="text-2xl font-bold mb-8" style={{ color: "#18020c" }}>
         Checkout
       </h1>
 
-      {/* Two column layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-        {/* ── Left — Order Summary ── */}
+        {/* Left — Order Summary */}
         <div
           className="rounded-xl p-6 border"
-          style={{ backgroundColor: "#FFFFFF", borderColor: "#E7E5E4" }}
+          style={{ backgroundColor: "#ffffff", borderColor: "rgba(122, 108, 93, 0.25)" }}
         >
-          <h2 className="text-base font-semibold mb-5" style={{ color: "#1C1917" }}>
+          <h2 className="text-base font-semibold mb-5" style={{ color: "#18020c" }}>
             Order Summary
           </h2>
 
-          {/* Product image */}
           <div
             className="rounded-xl overflow-hidden border mb-5"
-            style={{ borderColor: "#E7E5E4" }}
+            style={{ borderColor: "rgba(122, 108, 93, 0.25)" }}
           >
             <img
               src={product.image}
@@ -146,50 +138,46 @@ export default function CheckoutPage() {
             />
           </div>
 
-          {/* Product title */}
-          <p className="text-sm font-semibold mb-4" style={{ color: "#1C1917" }}>
+          <p className="text-sm font-semibold mb-4" style={{ color: "#18020c" }}>
             {product.title}
           </p>
 
-          {/* Summary rows */}
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <span className="text-sm" style={{ color: "#78716C" }}>Price</span>
-              <span className="text-sm font-medium" style={{ color: "#1C1917" }}>
-                ${product.price.toLocaleString()}
+              <span className="text-sm" style={{ color: "#7a6c5d" }}>Price</span>
+              <span className="text-sm font-medium" style={{ color: "#18020c" }}>
+                ৳{product.price?.toLocaleString()}
               </span>
             </div>
 
             <div className="flex justify-between items-center">
-              <span className="text-sm" style={{ color: "#78716C" }}>Quantity</span>
-              <span className="text-sm font-medium" style={{ color: "#1C1917" }}>1</span>
+              <span className="text-sm" style={{ color: "#7a6c5d" }}>Quantity</span>
+              <span className="text-sm font-medium" style={{ color: "#18020c" }}>1</span>
             </div>
 
-            {/* Divider + Total */}
-            <div className="border-t pt-3" style={{ borderColor: "#E7E5E4" }}>
+            <div className="border-t pt-3" style={{ borderColor: "rgba(122, 108, 93, 0.2)" }}>
               <div className="flex justify-between items-center">
-                <span className="text-sm font-semibold" style={{ color: "#1C1917" }}>Total</span>
-                <span className="text-lg font-bold" style={{ color: "#F97316" }}>
-                  ${product.price.toLocaleString()}
+                <span className="text-sm font-semibold" style={{ color: "#18020c" }}>Total</span>
+                <span className="text-lg font-bold" style={{ color: "#f1b055" }}>
+                  ৳{product.price?.toLocaleString()}
                 </span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* ── Right — Delivery Information ── */}
+        {/* Right — Delivery Information */}
         <div
           className="rounded-xl p-6 border"
-          style={{ backgroundColor: "#FFFFFF", borderColor: "#E7E5E4" }}
+          style={{ backgroundColor: "#ffffff", borderColor: "rgba(122, 108, 93, 0.25)" }}
         >
-          <h2 className="text-base font-semibold mb-5" style={{ color: "#1C1917" }}>
+          <h2 className="text-base font-semibold mb-5" style={{ color: "#18020c" }}>
             Delivery Information
           </h2>
 
           <div className="space-y-4">
-            {/* Full Name */}
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium" style={{ color: "#1C1917" }}>
+              <label className="text-sm font-medium" style={{ color: "#18020c" }}>
                 Full Name
               </label>
               <input
@@ -197,20 +185,19 @@ export default function CheckoutPage() {
                 placeholder="Enter your full name"
                 value={deliveryInfo.name}
                 onChange={handleChange("name")}
-                className="w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition focus:ring-2"
+                className="w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition"
                 style={{
-                  borderColor: "#E7E5E4",
-                  color: "#1C1917",
-                  backgroundColor: "#FFFFFF",
+                  borderColor: "rgba(122, 108, 93, 0.3)",
+                  color: "#18020c",
+                  backgroundColor: "#ffffff",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#F97316")}
-                onBlur={(e) => (e.target.style.borderColor = "#E7E5E4")}
+                onFocus={(e) => (e.target.style.borderColor = "#f1b055")}
+                onBlur={(e) => (e.target.style.borderColor = "rgba(122, 108, 93, 0.3)")}
               />
             </div>
 
-            {/* Phone */}
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium" style={{ color: "#1C1917" }}>
+              <label className="text-sm font-medium" style={{ color: "#18020c" }}>
                 Phone
               </label>
               <input
@@ -220,18 +207,17 @@ export default function CheckoutPage() {
                 onChange={handleChange("phone")}
                 className="w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition"
                 style={{
-                  borderColor: "#E7E5E4",
-                  color: "#1C1917",
-                  backgroundColor: "#FFFFFF",
+                  borderColor: "rgba(122, 108, 93, 0.3)",
+                  color: "#18020c",
+                  backgroundColor: "#ffffff",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#F97316")}
-                onBlur={(e) => (e.target.style.borderColor = "#E7E5E4")}
+                onFocus={(e) => (e.target.style.borderColor = "#f1b055")}
+                onBlur={(e) => (e.target.style.borderColor = "rgba(122, 108, 93, 0.3)")}
               />
             </div>
 
-            {/* Address */}
             <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium" style={{ color: "#1C1917" }}>
+              <label className="text-sm font-medium" style={{ color: "#18020c" }}>
                 Address
               </label>
               <input
@@ -241,33 +227,30 @@ export default function CheckoutPage() {
                 onChange={handleChange("address")}
                 className="w-full rounded-lg border px-4 py-2.5 text-sm outline-none transition"
                 style={{
-                  borderColor: "#E7E5E4",
-                  color: "#1C1917",
-                  backgroundColor: "#FFFFFF",
+                  borderColor: "rgba(122, 108, 93, 0.3)",
+                  color: "#18020c",
+                  backgroundColor: "#ffffff",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#F97316")}
-                onBlur={(e) => (e.target.style.borderColor = "#E7E5E4")}
+                onFocus={(e) => (e.target.style.borderColor = "#f1b055")}
+                onBlur={(e) => (e.target.style.borderColor = "rgba(122, 108, 93, 0.3)")}
               />
             </div>
           </div>
 
-          {/* Action buttons */}
           <div className="flex gap-3 mt-6">
-            {/* Cancel */}
             <button
               onClick={() => router.push("/products")}
-              className="flex-1 rounded-lg border py-2.5 text-sm font-semibold transition hover:bg-[#F5F5F4]"
-              style={{ borderColor: "#E7E5E4", color: "#78716C" }}
+              className="flex-1 rounded-lg border py-2.5 text-sm font-semibold transition hover:bg-stone-50"
+              style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#7a6c5d" }}
             >
               Cancel
             </button>
 
-            {/* Proceed to Payment */}
             <button
               onClick={handleProceed}
               disabled={proceedLoading}
-              className="flex-1 rounded-lg py-2.5 text-sm font-semibold text-white transition disabled:opacity-60"
-              style={{ backgroundColor: proceedLoading ? "#C2410C" : "#F97316" }}
+              className="flex-1 rounded-lg py-2.5 text-sm font-bold transition disabled:opacity-60"
+              style={{ backgroundColor: "#f1b055", color: "#18020c" }}
             >
               {proceedLoading ? "Processing..." : "Proceed to Payment"}
             </button>

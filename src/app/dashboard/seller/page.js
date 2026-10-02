@@ -21,10 +21,8 @@ export default function DashboardOverviewPage() {
 
   useEffect(() => {
     if (isPending || !user?.id) return;
-    console.log("seller user.id:", user.id);
     const fetchStats = async () => {
       try {
-        // fetch products and all seller orders in parallel
         const [productsData, orders] = await Promise.all([
           getMyProducts(user.id),
           getSellerOrders(user.id),
@@ -47,18 +45,18 @@ export default function DashboardOverviewPage() {
   }, [user?.id, isPending]);
 
   const STAT_CARDS = [
-    { label: "Total Products", value: stats.totalProducts, icon: Box, color: "#F97316" },
-    { label: "Total Sales", value: stats.totalSales, icon: ChartLine, color: "#3B5BDB" },
-    { label: "Revenue", value: `$${stats.revenue.toLocaleString()}`, icon: CircleDollar, color: "#16A34A" },
-    { label: "Pending Orders", value: stats.pendingOrders, icon: Clock, color: "#D97706" },
+    { label: "Total Products", value: stats.totalProducts, icon: Box, color: "#f1b055" },
+    { label: "Total Sales", value: stats.totalSales, icon: ChartLine, color: "#f1b055" },
+    { label: "Revenue", value: `৳${stats.revenue.toLocaleString()}`, icon: CircleDollar, color: "#f1b055" },
+    { label: "Pending Orders", value: stats.pendingOrders, icon: Clock, color: "#f1b055" },
   ];
 
   const name = user?.name || "there";
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-[#1C1917]">Welcome back, {name}</h1>
-      <p className="mt-1 text-sm text-[#78716C]">
+      <h1 className="text-2xl font-bold" style={{ color: "#18020c" }}>Welcome back, {name}</h1>
+      <p className="mt-1 text-sm" style={{ color: "#7a6c5d" }}>
         Here&apos;s a quick look at how your store is doing.
       </p>
 
@@ -66,17 +64,18 @@ export default function DashboardOverviewPage() {
         {STAT_CARDS.map(({ label, value, icon: Icon, color }) => (
           <div
             key={label}
-            className="rounded-2xl border border-[#E7E5E4] bg-white p-5 flex items-center gap-4 shadow-sm"
+            className="rounded-2xl border bg-white p-5 flex items-center gap-4 shadow-xs"
+            style={{ borderColor: "rgba(122, 108, 93, 0.25)" }}
           >
             <div
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg"
-              style={{ backgroundColor: `${color}1A` }}
+              style={{ backgroundColor: "rgba(241, 176, 85, 0.15)" }}
             >
               <Icon width={22} height={22} style={{ color }} />
             </div>
             <div className="flex flex-col">
-              <span className="text-sm text-[#78716C]">{label}</span>
-              <span className="text-xl font-bold text-[#1C1917]">
+              <span className="text-sm" style={{ color: "#7a6c5d" }}>{label}</span>
+              <span className="text-xl font-bold" style={{ color: "#18020c" }}>
                 {isLoading ? "..." : value}
               </span>
             </div>
@@ -86,4 +85,3 @@ export default function DashboardOverviewPage() {
     </div>
   );
 }
-

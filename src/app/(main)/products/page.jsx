@@ -2,14 +2,14 @@
 
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Magnifier, Xmark } from "@gravity-ui/icons";
 import { getProducts } from "@/lib/api/products";
 import ProductCardSkeleton from "@/components/ui/ProductCardSkeleton";
 
-const CATEGORIES = ["All", "Electronics", "Furniture", "Vehicles", "Fashion", "Mobile Phones"];
+const CATEGORIES = ["All", "Electronics", "Furniture", "Vehicles", "Fashion", "Mobile Phones", "Gaming & Consoles"];
 const SORT_OPTIONS = [
     { label: "Default", value: "" },
     { label: "Price: Low to High", value: "price_asc" },
@@ -17,8 +17,9 @@ const SORT_OPTIONS = [
 ];
 const CONDITIONS = ["All", "Used", "Like New", "Refurbished"];
 
-export default function AllProductsPage() {
+function ProductsContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
 
     const [products, setProducts] = useState([]);
     const [totalPages, setTotalPages] = useState(1);
@@ -27,11 +28,18 @@ export default function AllProductsPage() {
 
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
-    const [category, setCategory] = useState("all");
+    const [category, setCategory] = useState(searchParams.get("category") || "all");
     const [sort, setSort] = useState("");
     const [minPrice, setMinPrice] = useState("");
     const [maxPrice, setMaxPrice] = useState("");
     const [condition, setCondition] = useState("all");
+
+    useEffect(() => {
+        const catParam = searchParams.get("category");
+        if (catParam) {
+            setCategory(catParam);
+        }
+    }, [searchParams]);
 
     // dropdowns open state
     const [categoryOpen, setCategoryOpen] = useState(false);
@@ -71,19 +79,16 @@ export default function AllProductsPage() {
         fetchProducts();
     }, [fetchProducts]);
 
-    // reset to page 1 when any filter changes
     useEffect(() => {
         setCurrentPage(1);
     }, [debouncedSearch, category, sort, minPrice, maxPrice, condition]);
 
-    // condition badge color
     const conditionColor = (condition) => {
         if (condition === "Like New") return "#16A34A";
         if (condition === "Good") return "#CA8A04";
-        return "#78716C";
+        return "#7a6c5d";
     };
 
-    // reset all filters back to default
     const clearFilters = () => {
         setSearch("");
         setCategory("all");
@@ -94,26 +99,24 @@ export default function AllProductsPage() {
         setCurrentPage(1);
     };
 
-    // true if any filter is actively narrowing results
     const hasActiveFilters =
         search || category !== "all" || sort || minPrice || maxPrice || condition !== "all";
 
     return (
-        <div className="min-h-screen px-4 py-10 max-w-7xl mx-auto" style={{ backgroundColor: "#FAFAF9" }}>
+        <div className="min-h-screen px-4 py-10 max-w-7xl mx-auto" style={{ backgroundColor: "#ffffff" }}>
 
             {/* Page heading */}
             <div className="mb-8">
-                <h1 className="text-3xl font-bold" style={{ color: "#1C1917" }}>All Products</h1>
-                <p className="text-sm mt-1" style={{ color: "#78716C" }}>Browse quality second-hand items</p>
+                <h1 className="text-3xl font-bold" style={{ color: "#18020c" }}>All Products</h1>
+                <p className="text-sm mt-1" style={{ color: "#7a6c5d" }}>Browse quality second-hand items</p>
             </div>
 
-            {/* ── Filter bar ── */}
-            {/* flex-wrap: sits in one row on wide screens, wraps to multiple rows as space shrinks */}
+            {/* Filter bar */}
             <div className="flex flex-wrap gap-3 mb-8">
 
-                {/* Search input — flexible, grows to fill leftover space in its row */}
+                {/* Search input */}
                 <div className="relative flex-1 min-w-[200px]">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "#78716C" }}>
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "#7a6c5d" }}>
                         <Magnifier width={16} height={16} />
                     </span>
                     <input
@@ -121,8 +124,8 @@ export default function AllProductsPage() {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Search products..."
-                        className="w-full pl-9 pr-4 py-2.5 rounded-xl border text-sm outline-none transition-colors focus:border-orange-400"
-                        style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
+                        className="w-full pl-9 pr-4 py-2.5 rounded-xl border text-sm outline-none transition-colors"
+                        style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#18020c", backgroundColor: "#ffffff" }}
                     />
                 </div>
 
@@ -131,19 +134,19 @@ export default function AllProductsPage() {
                     <button
                         onClick={() => { setCategoryOpen((p) => !p); setSortOpen(false); setConditionOpen(false); }}
                         className="w-full px-4 py-2.5 rounded-xl border text-sm text-left flex items-center justify-between"
-                        style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
+                        style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#18020c", backgroundColor: "#ffffff" }}
                     >
                         <span>{category === "all" ? "All Categories" : category}</span>
-                        <span style={{ color: "#78716C" }}>▾</span>
+                        <span style={{ color: "#7a6c5d" }}>▾</span>
                     </button>
                     {categoryOpen && (
-                        <div className="absolute z-20 mt-1 w-full rounded-xl border shadow-lg overflow-hidden" style={{ borderColor: "#E7E5E4", backgroundColor: "#FFFFFF" }}>
+                        <div className="absolute z-20 mt-1 w-full rounded-xl border shadow-lg overflow-hidden" style={{ borderColor: "rgba(122, 108, 93, 0.3)", backgroundColor: "#ffffff" }}>
                             {CATEGORIES.map((cat) => (
                                 <button
                                     key={cat}
                                     onClick={() => { setCategory(cat.toLowerCase() === "all" ? "all" : cat); setCategoryOpen(false); }}
-                                    className="w-full px-4 py-2 text-sm text-left hover:bg-orange-50 transition-colors"
-                                    style={{ color: "#1C1917" }}
+                                    className="w-full px-4 py-2 text-sm text-left hover:bg-[#f1b055]/10 transition-colors"
+                                    style={{ color: "#18020c" }}
                                 >
                                     {cat}
                                 </button>
@@ -157,19 +160,19 @@ export default function AllProductsPage() {
                     <button
                         onClick={() => { setSortOpen((p) => !p); setCategoryOpen(false); setConditionOpen(false); }}
                         className="w-full px-4 py-2.5 rounded-xl border text-sm text-left flex items-center justify-between"
-                        style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
+                        style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#18020c", backgroundColor: "#ffffff" }}
                     >
                         <span>{SORT_OPTIONS.find((o) => o.value === sort)?.label || "Sort By"}</span>
-                        <span style={{ color: "#78716C" }}>▾</span>
+                        <span style={{ color: "#7a6c5d" }}>▾</span>
                     </button>
                     {sortOpen && (
-                        <div className="absolute z-20 mt-1 w-full rounded-xl border shadow-lg overflow-hidden" style={{ borderColor: "#E7E5E4", backgroundColor: "#FFFFFF" }}>
+                        <div className="absolute z-20 mt-1 w-full rounded-xl border shadow-lg overflow-hidden" style={{ borderColor: "rgba(122, 108, 93, 0.3)", backgroundColor: "#ffffff" }}>
                             {SORT_OPTIONS.map((opt) => (
                                 <button
                                     key={opt.value}
                                     onClick={() => { setSort(opt.value); setSortOpen(false); }}
-                                    className="w-full px-4 py-2 text-sm text-left hover:bg-orange-50 transition-colors"
-                                    style={{ color: "#1C1917" }}
+                                    className="w-full px-4 py-2 text-sm text-left hover:bg-[#f1b055]/10 transition-colors"
+                                    style={{ color: "#18020c" }}
                                 >
                                     {opt.label}
                                 </button>
@@ -183,19 +186,19 @@ export default function AllProductsPage() {
                     <button
                         onClick={() => { setConditionOpen((p) => !p); setCategoryOpen(false); setSortOpen(false); }}
                         className="w-full px-4 py-2.5 rounded-xl border text-sm text-left flex items-center justify-between"
-                        style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
+                        style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#18020c", backgroundColor: "#ffffff" }}
                     >
                         <span>{condition === "all" ? "All Conditions" : condition}</span>
-                        <span style={{ color: "#78716C" }}>▾</span>
+                        <span style={{ color: "#7a6c5d" }}>▾</span>
                     </button>
                     {conditionOpen && (
-                        <div className="absolute z-20 mt-1 w-full rounded-xl border shadow-lg overflow-hidden" style={{ borderColor: "#E7E5E4", backgroundColor: "#FFFFFF" }}>
+                        <div className="absolute z-20 mt-1 w-full rounded-xl border shadow-lg overflow-hidden" style={{ borderColor: "rgba(122, 108, 93, 0.3)", backgroundColor: "#ffffff" }}>
                             {CONDITIONS.map((c) => (
                                 <button
                                     key={c}
                                     onClick={() => { setCondition(c.toLowerCase() === "all" ? "all" : c); setConditionOpen(false); }}
-                                    className="w-full px-4 py-2 text-sm text-left hover:bg-orange-50 transition-colors"
-                                    style={{ color: "#1C1917" }}
+                                    className="w-full px-4 py-2 text-sm text-left hover:bg-[#f1b055]/10 transition-colors"
+                                    style={{ color: "#18020c" }}
                                 >
                                     {c}
                                 </button>
@@ -204,32 +207,32 @@ export default function AllProductsPage() {
                     )}
                 </div>
 
-                {/* Price range — grouped so min/max stay together when wrapping */}
+                {/* Price range */}
                 <div className="flex gap-2 w-full sm:w-auto">
                     <input
                         type="number"
                         value={minPrice}
                         onChange={(e) => setMinPrice(e.target.value)}
                         placeholder="Min ৳"
-                        className="w-full sm:w-24 px-3 py-2.5 rounded-xl border text-sm outline-none transition-colors focus:border-orange-400"
-                        style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
+                        className="w-full sm:w-24 px-3 py-2.5 rounded-xl border text-sm outline-none transition-colors"
+                        style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#18020c", backgroundColor: "#ffffff" }}
                     />
                     <input
                         type="number"
                         value={maxPrice}
                         onChange={(e) => setMaxPrice(e.target.value)}
                         placeholder="Max ৳"
-                        className="w-full sm:w-24 px-3 py-2.5 rounded-xl border text-sm outline-none transition-colors focus:border-orange-400"
-                        style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
+                        className="w-full sm:w-24 px-3 py-2.5 rounded-xl border text-sm outline-none transition-colors"
+                        style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#18020c", backgroundColor: "#ffffff" }}
                     />
                 </div>
 
-                {/* Clear Filters — only shown when something is actually filtering results */}
+                {/* Clear Filters */}
                 {hasActiveFilters && (
                     <button
                         onClick={clearFilters}
-                        className="flex items-center justify-center gap-1.5 w-full sm:w-auto px-4 py-2.5 rounded-xl border text-sm font-medium transition-colors hover:bg-orange-50"
-                        style={{ borderColor: "#E7E5E4", color: "#78716C" }}
+                        className="flex items-center justify-center gap-1.5 w-full sm:w-auto px-4 py-2.5 rounded-xl border text-sm font-medium transition-colors hover:bg-[#f1b055]/10"
+                        style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#7a6c5d" }}
                     >
                         <Xmark width={14} height={14} />
                         Clear Filters
@@ -237,15 +240,15 @@ export default function AllProductsPage() {
                 )}
             </div>
 
-            {/* ── Product grid ── */}
+            {/* Product grid */}
             {loading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {Array.from({ length: 9 }).map((_, i) => <ProductCardSkeleton key={i} />)}
                 </div>
             ) : products.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-24 gap-3">
-                    <p className="text-lg font-medium" style={{ color: "#1C1917" }}>No products found</p>
-                    <p className="text-sm" style={{ color: "#78716C" }}>Try adjusting your search or filters</p>
+                    <p className="text-lg font-medium" style={{ color: "#18020c" }}>No products found</p>
+                    <p className="text-sm" style={{ color: "#7a6c5d" }}>Try adjusting your search or filters</p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -256,12 +259,11 @@ export default function AllProductsPage() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.35, delay: i * 0.05 }}
-                            className="rounded-xl border overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-                            style={{ borderColor: "#E7E5E4", backgroundColor: "#FFFFFF" }}
+                            className="rounded-xl border overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer"
+                            style={{ borderColor: "rgba(122, 108, 93, 0.25)", backgroundColor: "#ffffff" }}
                             onClick={() => router.push(`/products/${product._id}`)}
                         >
-                            {/* Product image */}
-                            <div className="w-full h-48 overflow-hidden bg-gray-50">
+                            <div className="w-full h-48 overflow-hidden bg-stone-50">
                                 <img
                                     src={product.image}
                                     alt={product.title}
@@ -269,38 +271,37 @@ export default function AllProductsPage() {
                                 />
                             </div>
 
-                            {/* Card body */}
                             <div className="p-4 space-y-3">
-                                <h3 className="font-semibold text-sm line-clamp-2" style={{ color: "#1C1917" }}>
+                                <h3 className="font-semibold text-sm line-clamp-2" style={{ color: "#18020c" }}>
                                     {product.title}
                                 </h3>
 
-                                {/* Badges */}
                                 <div className="flex gap-2 flex-wrap">
                                     <span
-                                        className="text-xs px-2 py-0.5 rounded-full font-medium"
-                                        style={{ backgroundColor: "#FFF7ED", color: "#F97316" }}
+                                        className="text-xs px-2.5 py-0.5 rounded-full font-medium"
+                                        style={{ backgroundColor: "rgba(241, 176, 85, 0.2)", color: "#18020c" }}
                                     >
                                         {product.category}
                                     </span>
                                     <span
-                                        className="text-xs px-2 py-0.5 rounded-full font-medium"
+                                        className="text-xs px-2.5 py-0.5 rounded-full font-medium"
                                         style={{ backgroundColor: "#F0FDF4", color: conditionColor(product.condition) }}
                                     >
                                         {product.condition}
                                     </span>
                                 </div>
 
-                                {/* Price */}
-                                <p className="text-lg font-bold" style={{ color: "#F97316" }}>
-                                    ৳{product.price.toLocaleString()}
+                                <p className="text-lg font-bold" style={{ color: "#f1b055" }}>
+                                    ৳{product.price?.toLocaleString()}
                                 </p>
 
-                                {/* View Details button */}
                                 <button
-                                    onClick={() => router.push(`/products/${product._id}`)}
-                                    className="w-full py-2 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
-                                    style={{ backgroundColor: "#F97316" }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        router.push(`/products/${product._id}`);
+                                    }}
+                                    className="w-full py-2 rounded-xl text-sm font-bold transition-opacity hover:opacity-90"
+                                    style={{ backgroundColor: "#f1b055", color: "#18020c" }}
                                 >
                                     View Details
                                 </button>
@@ -310,14 +311,14 @@ export default function AllProductsPage() {
                 </div>
             )}
 
-            {/* ── Pagination ── */}
+            {/* Pagination */}
             {!loading && totalPages > 1 && (
                 <div className="flex justify-center gap-2 mt-10">
                     <button
                         onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                         disabled={currentPage === 1}
-                        className="px-4 py-2 rounded-xl border text-sm font-medium disabled:opacity-40 transition-colors hover:bg-orange-50"
-                        style={{ borderColor: "#E7E5E4", color: "#1C1917" }}
+                        className="px-4 py-2 rounded-xl border text-sm font-medium disabled:opacity-40 transition-colors hover:bg-stone-50"
+                        style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#18020c" }}
                     >
                         Previous
                     </button>
@@ -326,11 +327,11 @@ export default function AllProductsPage() {
                         <button
                             key={i}
                             onClick={() => setCurrentPage(i + 1)}
-                            className="w-9 h-9 rounded-xl border text-sm font-medium transition-colors"
+                            className="w-9 h-9 rounded-xl border text-sm font-bold transition-colors"
                             style={{
-                                borderColor: currentPage === i + 1 ? "#F97316" : "#E7E5E4",
-                                backgroundColor: currentPage === i + 1 ? "#F97316" : "#FFFFFF",
-                                color: currentPage === i + 1 ? "#FFFFFF" : "#1C1917",
+                                borderColor: currentPage === i + 1 ? "#f1b055" : "rgba(122, 108, 93, 0.3)",
+                                backgroundColor: currentPage === i + 1 ? "#f1b055" : "#ffffff",
+                                color: currentPage === i + 1 ? "#18020c" : "#18020c",
                             }}
                         >
                             {i + 1}
@@ -340,13 +341,21 @@ export default function AllProductsPage() {
                     <button
                         onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                         disabled={currentPage === totalPages}
-                        className="px-4 py-2 rounded-xl border text-sm font-medium disabled:opacity-40 transition-colors hover:bg-orange-50"
-                        style={{ borderColor: "#E7E5E4", color: "#1C1917" }}
+                        className="px-4 py-2 rounded-xl border text-sm font-medium disabled:opacity-40 transition-colors hover:bg-stone-50"
+                        style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#18020c" }}
                     >
                         Next
                     </button>
                 </div>
             )}
         </div>
+    );
+}
+
+export default function AllProductsPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen px-4 py-10 max-w-7xl mx-auto">Loading...</div>}>
+            <ProductsContent />
+        </Suspense>
     );
 }

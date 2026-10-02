@@ -15,7 +15,7 @@ import { useSession } from "@/lib/auth-client";
 import { updateProduct, deleteProduct } from "@/lib/actions/products";
 import { getMyProducts } from "@/lib/api/products";
 
-const CATEGORY_OPTIONS = ["Electronics", "Furniture", "Vehicles", "Fashion", "Mobile Phones"];
+const CATEGORY_OPTIONS = ["Electronics", "Furniture", "Vehicles", "Fashion", "Mobile Phones", "Gaming & Consoles"];
 const CONDITION_OPTIONS = ["Used", "Like New", "Refurbished"];
 
 const fieldClass =

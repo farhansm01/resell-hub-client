@@ -7,10 +7,10 @@ import { toast } from "react-toastify";
 import { getAdminStats } from "@/lib/api/admin";
 
 const STAT_CARDS = [
-  { label: "Total Users", key: "totalUsers", icon: Person, color: "#3B5BDB" },
-  { label: "Total Products", key: "totalProducts", icon: LayoutCellsLarge, color: "#F97316" },
-  { label: "Total Orders", key: "totalOrders", icon: FolderOpen, color: "#CA8A04" },
-  { label: "Total Revenue", key: "totalRevenue", icon: CircleDollar, color: "#16A34A", isMoney: true },
+  { label: "Total Users", key: "totalUsers", icon: Person, color: "#f1b055" },
+  { label: "Total Products", key: "totalProducts", icon: LayoutCellsLarge, color: "#f1b055" },
+  { label: "Total Orders", key: "totalOrders", icon: FolderOpen, color: "#f1b055" },
+  { label: "Total Revenue", key: "totalRevenue", icon: CircleDollar, color: "#f1b055", isMoney: true },
 ];
 
 export default function AdminOverviewPage() {
@@ -34,10 +34,10 @@ export default function AdminOverviewPage() {
   return (
     <div>
       {/* Heading */}
-      <h1 className="text-2xl font-bold" style={{ color: "#1C1917" }}>
+      <h1 className="text-2xl font-bold" style={{ color: "#18020c" }}>
         Welcome, Admin
       </h1>
-      <p className="mt-1 text-sm" style={{ color: "#78716C" }}>
+      <p className="mt-1 text-sm" style={{ color: "#7a6c5d" }}>
         Here&apos;s a snapshot of your platform.
       </p>
 
@@ -46,25 +46,25 @@ export default function AdminOverviewPage() {
         {STAT_CARDS.map(({ label, key, icon: Icon, color, isMoney }) => (
           <div
             key={key}
-            className="flex items-center gap-4 rounded-2xl border p-5 shadow-sm"
-            style={{ backgroundColor: "#FFFFFF", borderColor: "#E7E5E4" }}
+            className="flex items-center gap-4 rounded-2xl border p-5 shadow-xs"
+            style={{ backgroundColor: "#ffffff", borderColor: "rgba(122, 108, 93, 0.25)" }}
           >
             {/* Icon bubble */}
             <div
               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg"
-              style={{ backgroundColor: `${color}1A` }}
+              style={{ backgroundColor: "rgba(241, 176, 85, 0.15)" }}
             >
               <Icon width={22} height={22} style={{ color }} />
             </div>
 
             {/* Value + label */}
             <div className="flex flex-col">
-              <span className="text-sm" style={{ color: "#78716C" }}>{label}</span>
-              <span className="text-xl font-bold" style={{ color: "#1C1917" }}>
+              <span className="text-sm" style={{ color: "#7a6c5d" }}>{label}</span>
+              <span className="text-xl font-bold" style={{ color: "#18020c" }}>
                 {isLoading
                   ? "..."
                   : isMoney
-                  ? `$${(stats?.[key] ?? 0).toLocaleString()}`
+                  ? `৳${(stats?.[key] ?? 0).toLocaleString()}`
                   : (stats?.[key] ?? 0).toLocaleString()}
               </span>
             </div>

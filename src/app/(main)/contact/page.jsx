@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { toast } from "react-toastify";
 import { Envelope, Handset, MapPin } from "@gravity-ui/icons";
 
-// inline SVG icons for socials — not part of Gravity UI's icon set
 const SOCIALS = [
   {
     label: "Facebook",
@@ -38,7 +37,6 @@ const SOCIALS = [
 ];
 
 export default function ContactPage() {
-  // controlled form state — UI only, no backend
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
 
   const handleChange = (e) => {
@@ -52,37 +50,37 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#FAFAF9" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "#ffffff" }}>
 
-      {/* ───────────── Hero Section ───────────── */}
+      {/* Hero Section */}
       <motion.section
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
         className="px-4 sm:px-6 lg:px-8 py-20 max-w-5xl mx-auto text-center"
       >
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold" style={{ color: "#1C1917" }}>
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold" style={{ color: "#18020c" }}>
           Get in Touch
         </h1>
-        <p className="mt-4 text-base sm:text-lg" style={{ color: "#78716C" }}>
+        <p className="mt-4 text-base sm:text-lg" style={{ color: "#7a6c5d" }}>
           We&apos;d love to hear from you
         </p>
       </motion.section>
 
-      {/* ───────────── Two Column Layout ───────────── */}
+      {/* Two Column Layout */}
       <section className="px-4 sm:px-6 lg:px-8 pb-20 max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
 
-          {/* ── Left: Contact Info ── */}
+          {/* Left: Contact Info */}
           <motion.div
             initial={{ opacity: 0, x: -40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
             className="rounded-2xl border p-6 sm:p-8 flex flex-col gap-6"
-            style={{ backgroundColor: "#FFFFFF", borderColor: "#E7E5E4" }}
+            style={{ backgroundColor: "#ffffff", borderColor: "rgba(122, 108, 93, 0.25)" }}
           >
-            <h2 className="text-xl font-bold" style={{ color: "#1C1917" }}>
+            <h2 className="text-xl font-bold" style={{ color: "#18020c" }}>
               Contact Information
             </h2>
 
@@ -90,47 +88,47 @@ export default function ContactPage() {
               <li className="flex items-center gap-3">
                 <div
                   className="flex h-10 w-10 items-center justify-center rounded-full shrink-0"
-                  style={{ backgroundColor: "#FFF7ED" }}
+                  style={{ backgroundColor: "rgba(241, 176, 85, 0.15)" }}
                 >
-                  <Envelope width={20} height={20} style={{ color: "#F97316" }} />
+                  <Envelope width={20} height={20} style={{ color: "#f1b055" }} />
                 </div>
-                <span className="text-sm" style={{ color: "#78716C" }}>support@resellhub.com</span>
+                <span className="text-sm" style={{ color: "#7a6c5d" }}>support@resellhub.com</span>
               </li>
               <li className="flex items-center gap-3">
                 <div
                   className="flex h-10 w-10 items-center justify-center rounded-full shrink-0"
-                  style={{ backgroundColor: "#FFF7ED" }}
+                  style={{ backgroundColor: "rgba(241, 176, 85, 0.15)" }}
                 >
-                  <Handset width={20} height={20} style={{ color: "#F97316" }} />
+                  <Handset width={20} height={20} style={{ color: "#f1b055" }} />
                 </div>
-                <span className="text-sm" style={{ color: "#78716C" }}>+880 1700 000000</span>
+                <span className="text-sm" style={{ color: "#7a6c5d" }}>+880 1700 000000</span>
               </li>
               <li className="flex items-center gap-3">
                 <div
                   className="flex h-10 w-10 items-center justify-center rounded-full shrink-0"
-                  style={{ backgroundColor: "#FFF7ED" }}
+                  style={{ backgroundColor: "rgba(241, 176, 85, 0.15)" }}
                 >
-                  <MapPin width={20} height={20} style={{ color: "#F97316" }} />
+                  <MapPin width={20} height={20} style={{ color: "#f1b055" }} />
                 </div>
-                <span className="text-sm" style={{ color: "#78716C" }}>Dhaka, Bangladesh</span>
+                <span className="text-sm" style={{ color: "#7a6c5d" }}>Dhaka, Bangladesh</span>
               </li>
             </ul>
 
             {/* Social links */}
             <div className="mt-2">
-              <p className="text-sm font-semibold mb-3" style={{ color: "#1C1917" }}>
+              <p className="text-sm font-semibold mb-3" style={{ color: "#18020c" }}>
                 Follow Us
               </p>
               <div className="flex gap-3">
                 {SOCIALS.map((social) => (
-                  
-                  <a  key={social.label}
+                  <a
+                    key={social.label}
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={social.label}
                     className="flex h-10 w-10 items-center justify-center rounded-full transition-colors hover:opacity-80"
-                    style={{ backgroundColor: "#FFF7ED", color: "#F97316" }}
+                    style={{ backgroundColor: "rgba(241, 176, 85, 0.15)", color: "#f1b055" }}
                   >
                     {social.svg}
                   </a>
@@ -139,23 +137,22 @@ export default function ContactPage() {
             </div>
           </motion.div>
 
-          {/* ── Right: Contact Form ── */}
+          {/* Right: Contact Form */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
             className="rounded-2xl border p-6 sm:p-8"
-            style={{ backgroundColor: "#FFFFFF", borderColor: "#E7E5E4" }}
+            style={{ backgroundColor: "#ffffff", borderColor: "rgba(122, 108, 93, 0.25)" }}
           >
-            <h2 className="text-xl font-bold mb-6" style={{ color: "#1C1917" }}>
+            <h2 className="text-xl font-bold mb-6" style={{ color: "#18020c" }}>
               Send a Message
             </h2>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-              {/* Name */}
               <div>
-                <label className="text-sm font-medium mb-1 block" style={{ color: "#1C1917" }}>
+                <label className="text-sm font-medium mb-1 block" style={{ color: "#18020c" }}>
                   Name
                 </label>
                 <input
@@ -165,14 +162,13 @@ export default function ContactPage() {
                   onChange={handleChange}
                   required
                   placeholder="Your name"
-                  className="w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-colors focus:border-orange-400"
-                  style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
+                  className="w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-colors"
+                  style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#18020c", backgroundColor: "#ffffff" }}
                 />
               </div>
 
-              {/* Email */}
               <div>
-                <label className="text-sm font-medium mb-1 block" style={{ color: "#1C1917" }}>
+                <label className="text-sm font-medium mb-1 block" style={{ color: "#18020c" }}>
                   Email
                 </label>
                 <input
@@ -182,14 +178,13 @@ export default function ContactPage() {
                   onChange={handleChange}
                   required
                   placeholder="you@example.com"
-                  className="w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-colors focus:border-orange-400"
-                  style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
+                  className="w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-colors"
+                  style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#18020c", backgroundColor: "#ffffff" }}
                 />
               </div>
 
-              {/* Subject */}
               <div>
-                <label className="text-sm font-medium mb-1 block" style={{ color: "#1C1917" }}>
+                <label className="text-sm font-medium mb-1 block" style={{ color: "#18020c" }}>
                   Subject
                 </label>
                 <input
@@ -199,14 +194,13 @@ export default function ContactPage() {
                   onChange={handleChange}
                   required
                   placeholder="What's this about?"
-                  className="w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-colors focus:border-orange-400"
-                  style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
+                  className="w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-colors"
+                  style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#18020c", backgroundColor: "#ffffff" }}
                 />
               </div>
 
-              {/* Message */}
               <div>
-                <label className="text-sm font-medium mb-1 block" style={{ color: "#1C1917" }}>
+                <label className="text-sm font-medium mb-1 block" style={{ color: "#18020c" }}>
                   Message
                 </label>
                 <textarea
@@ -216,16 +210,15 @@ export default function ContactPage() {
                   required
                   rows={5}
                   placeholder="Tell us more..."
-                  className="w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-colors focus:border-orange-400 resize-none"
-                  style={{ borderColor: "#E7E5E4", color: "#1C1917", backgroundColor: "#FFFFFF" }}
+                  className="w-full px-4 py-2.5 rounded-xl border text-sm outline-none transition-colors resize-none"
+                  style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#18020c", backgroundColor: "#ffffff" }}
                 />
               </div>
 
-              {/* Submit */}
               <button
                 type="submit"
-                className="mt-2 w-full py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
-                style={{ backgroundColor: "#F97316" }}
+                className="mt-2 w-full py-2.5 rounded-xl text-sm font-bold transition-opacity hover:opacity-90"
+                style={{ backgroundColor: "#f1b055", color: "#18020c" }}
               >
                 Send Message
               </button>

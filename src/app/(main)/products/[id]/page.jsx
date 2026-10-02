@@ -5,7 +5,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Button, Chip } from "@heroui/react";
+import { Button } from "@heroui/react";
 import { ArrowLeft, Star } from "@gravity-ui/icons";
 import { useSession } from "@/lib/auth-client";
 import { getProductById } from "@/lib/api/products";
@@ -26,7 +26,6 @@ export default function ProductDetailsPage() {
   const [wishlistLoading, setWishlistLoading] = useState(false);
   const [recentlyViewed, setRecentlyViewed] = useState([]);
 
-  // fetch product and reviews on mount
   useEffect(() => {
     if (!id) return;
 
@@ -40,31 +39,26 @@ export default function ProductDetailsPage() {
       .catch(() => setReviews([]));
   }, [id]);
 
- // once product loads AND auth state resolves — save to the correct identity-scoped bucket
-useEffect(() => {
-  if (!product) return;
+  useEffect(() => {
+    if (!product) return;
 
-  saveRecentlyViewed(
-    {
-      _id: product._id,
-      title: product.title,
-      image: product.image,
-      price: product.price,
-      category: product.category,
-      condition: product.condition,
-    },
-    user?.id
-  );
+    saveRecentlyViewed(
+      {
+        _id: product._id,
+        title: product.title,
+        image: product.image,
+        price: product.price,
+        category: product.category,
+        condition: product.condition,
+      },
+      user?.id
+    );
 
-  setRecentlyViewed(
-    getRecentlyViewed(user?.id).filter((p) => p._id !== product._id)
-  );
-}, [product, user?.id]);
+    setRecentlyViewed(
+      getRecentlyViewed(user?.id).filter((p) => p._id !== product._id)
+    );
+  }, [product, user?.id]);
 
-
-
-
-  // add to wishlist handler
   const handleAddToWishlist = async () => {
     if (!user) {
       router.push("/signin");
@@ -75,7 +69,6 @@ useEffect(() => {
       await addToWishlist(user.id, id);
       toast.success("Added to wishlist!");
     } catch (err) {
-      // 409 means already in wishlist
       if (err.message === "Already in wishlist") {
         toast.error("Already in your wishlist");
       } else {
@@ -86,15 +79,12 @@ useEffect(() => {
     }
   };
 
-  
-  // buy now handler — stores product in sessionStorage and redirects to checkout
   const handleBuyNow = async () => {
     if (!user) {
       router.push("/signin");
       return;
     }
 
-    // store product data for checkout page
     sessionStorage.setItem(
       "checkoutProduct",
       JSON.stringify({
@@ -110,43 +100,40 @@ useEffect(() => {
 
     router.push("/checkout");
   };
-  // star rating display
+
   const renderStars = (rating) => {
     return Array.from({ length: 5 }).map((_, i) => (
       <Star
         key={i}
         width={14}
         height={14}
-        style={{ color: i < rating ? "#F97316" : "#E7E5E4" }}
+        style={{ color: i < rating ? "#f1b055" : "rgba(122, 108, 93, 0.3)" }}
       />
     ));
   };
 
-  // loading state
   if (productLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div
           className="animate-spin rounded-full h-10 w-10 border-4 border-t-transparent"
-          style={{ borderColor: "#F97316", borderTopColor: "transparent" }}
+          style={{ borderColor: "#f1b055", borderTopColor: "transparent" }}
         />
       </div>
     );
   }
 
-  // product not found
   if (!product) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <p className="text-lg font-medium" style={{ color: "#1C1917" }}>Product not found</p>
-        <Button radius="md" onPress={() => router.push("/products")} style={{ backgroundColor: "#F97316" }} className="text-white font-semibold">
+        <p className="text-lg font-medium" style={{ color: "#18020c" }}>Product not found</p>
+        <Button radius="md" onPress={() => router.push("/products")} style={{ backgroundColor: "#f1b055", color: "#18020c" }} className="font-bold">
           Back to Products
         </Button>
       </div>
     );
   }
 
-  // role check — sellers can't buy
   const isSeller = user?.role === "seller";
   const isAdmin = user?.role === "admin";
   const showActions = !isSeller && !isAdmin;
@@ -157,23 +144,23 @@ useEffect(() => {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
       className="max-w-6xl mx-auto px-4 py-10"
-      style={{ backgroundColor: "#FAFAF9" }}
+      style={{ backgroundColor: "#ffffff" }}
     >
       {/* Back button */}
       <button
         onClick={() => router.push("/products")}
         className="flex items-center gap-2 text-sm font-medium mb-8 hover:opacity-70 transition-opacity"
-        style={{ color: "#78716C" }}
+        style={{ color: "#7a6c5d" }}
       >
         <ArrowLeft width={16} height={16} />
         Back to Products
       </button>
 
-      {/* ── Main product section ── */}
+      {/* Main product section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-12">
 
-        {/* Left — product image */}
-        <div className="rounded-xl overflow-hidden border" style={{ borderColor: "#E7E5E4" }}>
+        {/* Left image */}
+        <div className="rounded-xl overflow-hidden border" style={{ borderColor: "rgba(122, 108, 93, 0.25)" }}>
           <img
             src={product.image}
             alt={product.title}
@@ -181,22 +168,22 @@ useEffect(() => {
           />
         </div>
 
-        {/* Right — product details */}
+        {/* Right details */}
         <div className="flex flex-col gap-4">
 
-          <h1 className="text-2xl font-bold leading-snug" style={{ color: "#1C1917" }}>
+          <h1 className="text-2xl font-bold leading-snug" style={{ color: "#18020c" }}>
             {product.title}
           </h1>
 
-          <p className="text-3xl font-bold" style={{ color: "#F97316" }}>
-            ${product.price.toLocaleString()}
+          <p className="text-3xl font-bold" style={{ color: "#f1b055" }}>
+            ৳{product.price?.toLocaleString()}
           </p>
 
           {/* Badges */}
           <div className="flex gap-2 flex-wrap">
             <span
               className="text-xs px-3 py-1 rounded-full font-medium"
-              style={{ backgroundColor: "#FFF7ED", color: "#F97316" }}
+              style={{ backgroundColor: "rgba(241, 176, 85, 0.2)", color: "#18020c" }}
             >
               {product.category}
             </span>
@@ -218,20 +205,20 @@ useEffect(() => {
           </p>
 
           {/* Description */}
-          <p className="text-sm leading-relaxed" style={{ color: "#78716C" }}>
+          <p className="text-sm leading-relaxed" style={{ color: "#7a6c5d" }}>
             {product.description}
           </p>
 
           {/* Seller info */}
           <div
             className="rounded-xl p-4 border"
-            style={{ borderColor: "#E7E5E4", backgroundColor: "#FFFFFF" }}
+            style={{ borderColor: "rgba(122, 108, 93, 0.25)", backgroundColor: "#ffffff" }}
           >
-            <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: "#78716C" }}>
+            <p className="text-xs font-semibold uppercase tracking-wide mb-2" style={{ color: "#7a6c5d" }}>
               Seller Information
             </p>
-            <p className="text-sm font-medium" style={{ color: "#1C1917" }}>{product.sellerName}</p>
-            <p className="text-sm" style={{ color: "#78716C" }}>{product.sellerEmail}</p>
+            <p className="text-sm font-medium" style={{ color: "#18020c" }}>{product.sellerName}</p>
+            <p className="text-sm" style={{ color: "#7a6c5d" }}>{product.sellerEmail}</p>
           </div>
 
           {/* Action buttons */}
@@ -240,16 +227,16 @@ useEffect(() => {
               <button
                 onClick={handleAddToWishlist}
                 disabled={wishlistLoading}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold border transition-opacity hover:opacity-90 disabled:opacity-60"
-                style={{ borderColor: "#F97316", color: "#F97316", backgroundColor: "transparent" }}
+                className="flex-1 py-2.5 rounded-xl text-sm font-bold border transition-opacity hover:opacity-90 disabled:opacity-60"
+                style={{ borderColor: "#f1b055", color: "#18020c", backgroundColor: "rgba(241, 176, 85, 0.15)" }}
               >
                 {wishlistLoading ? "Adding..." : "Add to Wishlist"}
               </button>
               <button
                 onClick={handleBuyNow}
                 disabled={product.stock === 0}
-                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-60"
-                style={{ backgroundColor: "#F97316" }}
+                className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-60"
+                style={{ backgroundColor: "#f1b055", color: "#18020c" }}
               >
                 Buy Now
               </button>
@@ -258,19 +245,19 @@ useEffect(() => {
         </div>
       </div>
 
-      {/* ── Reviews section ── */}
+      {/* Reviews section */}
       <div
         className="rounded-xl border p-6"
-        style={{ borderColor: "#E7E5E4", backgroundColor: "#FFFFFF" }}
+        style={{ borderColor: "rgba(122, 108, 93, 0.25)", backgroundColor: "#ffffff" }}
       >
-        <h2 className="text-lg font-bold mb-6" style={{ color: "#1C1917" }}>
+        <h2 className="text-lg font-bold mb-6" style={{ color: "#18020c" }}>
           Customer Reviews ({reviews.length})
         </h2>
 
         {reviews.length === 0 ? (
           <div className="flex flex-col items-center py-10 gap-2">
-            <p className="text-sm" style={{ color: "#78716C" }}>No reviews yet</p>
-            <p className="text-xs" style={{ color: "#78716C" }}>Be the first to review this product</p>
+            <p className="text-sm" style={{ color: "#7a6c5d" }}>No reviews yet</p>
+            <p className="text-xs" style={{ color: "#7a6c5d" }}>Be the first to review this product</p>
           </div>
         ) : (
           <div className="space-y-4">
@@ -278,17 +265,17 @@ useEffect(() => {
               <div
                 key={review._id}
                 className="p-4 rounded-xl border"
-                style={{ borderColor: "#E7E5E4", backgroundColor: "#FAFAF9" }}
+                style={{ borderColor: "rgba(122, 108, 93, 0.2)", backgroundColor: "#ffffff" }}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-sm font-semibold" style={{ color: "#1C1917" }}>
+                  <p className="text-sm font-semibold" style={{ color: "#18020c" }}>
                     {review.reviewerInfo?.name || "Anonymous"}
                   </p>
                   <div className="flex gap-0.5">
                     {renderStars(review.rating)}
                   </div>
                 </div>
-                <p className="text-sm" style={{ color: "#78716C" }}>
+                <p className="text-sm" style={{ color: "#7a6c5d" }}>
                   {review.comment}
                 </p>
               </div>
@@ -297,7 +284,7 @@ useEffect(() => {
         )}
       </div>
 
-      {/* ── Recently Viewed section ── */}
+      {/* Recently Viewed section */}
       {recentlyViewed.length > 0 && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -305,21 +292,19 @@ useEffect(() => {
           transition={{ duration: 0.5 }}
           className="mt-12"
         >
-          <h2 className="text-lg font-bold mb-6" style={{ color: "#1C1917" }}>
+          <h2 className="text-lg font-bold mb-6" style={{ color: "#18020c" }}>
             Recently Viewed
           </h2>
 
-          {/* horizontal scroll row on mobile, grid on sm+ (negative margin lets cards bleed to screen edge while scrolling) */}
           <div className="flex gap-4 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible">
             {recentlyViewed.map((item) => (
               <div
                 key={item._id}
                 onClick={() => router.push(`/products/${item._id}`)}
-                className="rounded-xl border overflow-hidden cursor-pointer shrink-0 w-40 sm:w-full transition-shadow hover:shadow-md"
-                style={{ borderColor: "#E7E5E4", backgroundColor: "#FFFFFF" }}
+                className="rounded-xl border overflow-hidden cursor-pointer shrink-0 w-40 sm:w-full transition-all hover:shadow-md"
+                style={{ borderColor: "rgba(122, 108, 93, 0.25)", backgroundColor: "#ffffff" }}
               >
-                {/* Image */}
-                <div className="w-full h-32 overflow-hidden bg-gray-50">
+                <div className="w-full h-32 overflow-hidden bg-stone-50">
                   <img
                     src={item.image}
                     alt={item.title}
@@ -327,19 +312,18 @@ useEffect(() => {
                   />
                 </div>
 
-                {/* Body */}
                 <div className="p-3 space-y-1.5">
-                  <h4 className="text-sm font-semibold line-clamp-1" style={{ color: "#1C1917" }}>
+                  <h4 className="text-sm font-semibold line-clamp-1" style={{ color: "#18020c" }}>
                     {item.title}
                   </h4>
                   <span
                     className="inline-block text-xs px-2 py-0.5 rounded-full font-medium"
-                    style={{ backgroundColor: "#FFF7ED", color: "#F97316" }}
+                    style={{ backgroundColor: "rgba(241, 176, 85, 0.2)", color: "#18020c" }}
                   >
                     {item.category}
                   </span>
-                  <p className="text-sm font-bold" style={{ color: "#F97316" }}>
-                    ${item.price.toLocaleString()}
+                  <p className="text-sm font-bold" style={{ color: "#f1b055" }}>
+                    ৳{item.price?.toLocaleString()}
                   </p>
                 </div>
               </div>

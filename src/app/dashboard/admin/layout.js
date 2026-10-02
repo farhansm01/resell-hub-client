@@ -13,18 +13,18 @@ export default function AdminDashboardLayout({ children }) {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#FAFAF9]">
+      <div className="flex h-screen items-center justify-center bg-white">
         <Spinner />
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#FAFAF9]">
+    <div className="flex h-screen overflow-hidden bg-white">
       {/* Desktop sidebar */}
       <aside
         className="hidden lg:flex lg:w-[250px] lg:shrink-0 lg:flex-col"
-        style={{ backgroundColor: "#1C1917" }}
+        style={{ backgroundColor: "#18020c" }}
       >
         <AdminSidebar />
       </aside>
@@ -43,18 +43,18 @@ export default function AdminDashboardLayout({ children }) {
         {/* Mobile header */}
         <header
           className="flex items-center gap-3 border-b px-4 py-3 lg:hidden"
-          style={{ backgroundColor: "#FFFFFF", borderColor: "#E7E5E4" }}
+          style={{ backgroundColor: "#ffffff", borderColor: "rgba(122, 108, 93, 0.25)" }}
         >
           <button
             onClick={() => setIsDrawerOpen(true)}
             className="rounded-md p-2 transition-colors"
-            style={{ color: "#1C1917" }}
+            style={{ color: "#18020c" }}
             aria-label="Open menu"
           >
             <Bars width={22} height={22} />
           </button>
-          <span className="font-bold" style={{ color: "#1C1917" }}>
-            <span style={{ color: "#F97316" }}>ReSell</span>Hub
+          <span className="font-bold" style={{ color: "#18020c" }}>
+            <span style={{ color: "#f1b055" }}>ReSell</span>Hub
           </span>
         </header>
 

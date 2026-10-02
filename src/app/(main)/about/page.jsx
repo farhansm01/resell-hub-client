@@ -4,13 +4,11 @@
 import { motion } from "framer-motion";
 import { TrashBin, PlanetEarth, Persons } from "@gravity-ui/icons";
 
-// stagger container — used for mission cards + how-it-works steps
 const containerVariants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.15 } },
 };
 
-// individual item fade + slide up
 const itemVariants = {
   hidden: { opacity: 0, y: 24 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
@@ -52,19 +50,19 @@ const STATS = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#FAFAF9" }}>
+    <div className="min-h-screen" style={{ backgroundColor: "#ffffff" }}>
 
-      {/* ───────────── Hero Section ───────────── */}
+      {/* Hero Section */}
       <section className="px-4 sm:px-6 lg:px-8 py-20 max-w-5xl mx-auto text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold" style={{ color: "#1C1917" }}>
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold" style={{ color: "#18020c" }}>
             About ReSell Hub
           </h1>
-          <p className="mt-4 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: "#78716C" }}>
+          <p className="mt-4 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed" style={{ color: "#7a6c5d" }}>
             ReSell Hub is a second-hand marketplace built to make buying and selling pre-owned
             goods simple, safe, and sustainable — connecting everyday sellers with buyers looking
             for great deals on quality items.
@@ -72,13 +70,13 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
-      {/* ───────────── Mission Section ───────────── */}
+      {/* Mission Section */}
       <section className="px-4 sm:px-6 lg:px-8 py-16 max-w-7xl mx-auto">
         <div className="text-center mb-12">
-          <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "#1C1917" }}>
+          <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "#18020c" }}>
             Our Mission
           </h2>
-          <p className="mt-2 text-sm sm:text-base" style={{ color: "#78716C" }}>
+          <p className="mt-2 text-sm sm:text-base" style={{ color: "#7a6c5d" }}>
             What drives everything we build
           </p>
         </div>
@@ -95,19 +93,19 @@ export default function AboutPage() {
               key={title}
               variants={itemVariants}
               className="rounded-2xl border p-6 flex flex-col items-center text-center gap-3"
-              style={{ backgroundColor: "#FFFFFF", borderColor: "#E7E5E4" }}
+              style={{ backgroundColor: "#ffffff", borderColor: "rgba(122, 108, 93, 0.25)" }}
             >
               {/* Icon bubble */}
               <div
                 className="flex h-14 w-14 items-center justify-center rounded-full"
-                style={{ backgroundColor: "#FFF7ED" }}
+                style={{ backgroundColor: "rgba(241, 176, 85, 0.15)" }}
               >
-                <Icon width={28} height={28} style={{ color: "#F97316" }} />
+                <Icon width={28} height={28} style={{ color: "#f1b055" }} />
               </div>
-              <h3 className="font-semibold text-lg" style={{ color: "#1C1917" }}>
+              <h3 className="font-semibold text-lg" style={{ color: "#18020c" }}>
                 {title}
               </h3>
-              <p className="text-sm leading-relaxed" style={{ color: "#78716C" }}>
+              <p className="text-sm leading-relaxed" style={{ color: "#7a6c5d" }}>
                 {description}
               </p>
             </motion.div>
@@ -115,13 +113,13 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
-      {/* ───────────── How It Works Section ───────────── */}
-      <section className="px-4 sm:px-6 lg:px-8 py-16 max-w-7xl mx-auto">
+      {/* How It Works Section */}
+      <section className="px-4 sm:px-6 lg:px-8 py-16 max-w-7xl mx-auto border-t" style={{ borderColor: "rgba(122, 108, 93, 0.15)" }}>
         <div className="text-center mb-12">
-          <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "#1C1917" }}>
+          <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: "#18020c" }}>
             How It Works
           </h2>
-          <p className="mt-2 text-sm sm:text-base" style={{ color: "#78716C" }}>
+          <p className="mt-2 text-sm sm:text-base" style={{ color: "#7a6c5d" }}>
             From sign-up to sold — four simple steps
           </p>
         </div>
@@ -138,19 +136,19 @@ export default function AboutPage() {
               key={number}
               variants={itemVariants}
               className="rounded-2xl border p-6 flex flex-col gap-3"
-              style={{ backgroundColor: "#FFFFFF", borderColor: "#E7E5E4" }}
+              style={{ backgroundColor: "#ffffff", borderColor: "rgba(122, 108, 93, 0.25)" }}
             >
               {/* Numbered badge */}
               <div
                 className="flex h-10 w-10 items-center justify-center rounded-full font-bold text-sm"
-                style={{ backgroundColor: "#F97316", color: "#FFFFFF" }}
+                style={{ backgroundColor: "#f1b055", color: "#18020c" }}
               >
                 {number}
               </div>
-              <h3 className="font-semibold text-base" style={{ color: "#1C1917" }}>
+              <h3 className="font-semibold text-base" style={{ color: "#18020c" }}>
                 {title}
               </h3>
-              <p className="text-sm leading-relaxed" style={{ color: "#78716C" }}>
+              <p className="text-sm leading-relaxed" style={{ color: "#7a6c5d" }}>
                 {description}
               </p>
             </motion.div>
@@ -158,8 +156,8 @@ export default function AboutPage() {
         </motion.div>
       </section>
 
-      {/* ───────────── Stats Section ───────────── */}
-      <section className="px-4 sm:px-6 lg:px-8 py-16 max-w-5xl mx-auto">
+      {/* Stats Section */}
+      <section className="px-4 sm:px-6 lg:px-8 py-16 max-w-5xl mx-auto border-t" style={{ borderColor: "rgba(122, 108, 93, 0.15)" }}>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
           {STATS.map(({ value, label }, i) => (
             <motion.div
@@ -169,10 +167,10 @@ export default function AboutPage() {
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: i * 0.1 }}
             >
-              <p className="text-4xl sm:text-5xl font-extrabold" style={{ color: "#F97316" }}>
+              <p className="text-4xl sm:text-5xl font-extrabold" style={{ color: "#f1b055" }}>
                 {value}
               </p>
-              <p className="mt-2 text-sm sm:text-base font-medium" style={{ color: "#78716C" }}>
+              <p className="mt-2 text-sm sm:text-base font-medium" style={{ color: "#7a6c5d" }}>
                 {label}
               </p>
             </motion.div>

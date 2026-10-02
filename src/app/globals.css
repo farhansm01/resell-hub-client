@@ -1,1 +1,70 @@
 @import "tailwindcss";
+
+@theme {
+  --color-page-bg: #ffffff;
+  --color-card-bg: #ffffff;
+  --color-main-text: #18020c;
+  --color-dark-bg: #18020c;
+  --color-accent: #f1b055;
+  --color-accent-hover: #e09f44;
+  --color-muted-text: #7a6c5d;
+  --color-border: #7a6c5d;
+}
+
+:root {
+  --bg-page: #ffffff;
+  --bg-card: #ffffff;
+  --text-main: #18020c;
+  --bg-dark: #18020c;
+  --accent: #f1b055;
+  --accent-hover: #e09f44;
+  --muted: #7a6c5d;
+  --border: #7a6c5d;
+}
+
+body {
+  background-color: var(--bg-page);
+  color: var(--text-main);
+  margin: 0;
+}
+
+/* Custom theme helper classes */
+.bg-page {
+  background-color: #ffffff !important;
+}
+
+.bg-card {
+  background-color: #ffffff !important;
+}
+
+.text-main {
+  color: #18020c !important;
+}
+
+.bg-dark {
+  background-color: #18020c !important;
+}
+
+.text-accent {
+  color: #f1b055 !important;
+}
+
+.bg-accent {
+  background-color: #f1b055 !important;
+}
+
+.bg-accent-hover:hover {
+  background-color: #e09f44 !important;
+}
+
+.text-muted {
+  color: #7a6c5d !important;
+}
+
+.border-muted {
+  border-color: #7a6c5d !important;
+}
+
+.border-subtle {
+  border-color: rgba(122, 108, 93, 0.25) !important;
+}

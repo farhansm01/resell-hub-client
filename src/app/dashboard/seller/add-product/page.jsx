@@ -12,7 +12,7 @@ import { useSession } from "@/lib/auth-client";
 import { addProduct } from "@/lib/actions/products";
 
 // Fixed option lists per spec
-const CATEGORY_OPTIONS = ["Electronics", "Furniture", "Vehicles", "Fashion", "Mobile Phones"];
+const CATEGORY_OPTIONS = ["Electronics", "Furniture", "Vehicles", "Fashion", "Mobile Phones", "Gaming & Consoles"];
 const CONDITION_OPTIONS = ["Used", "Like New", "Refurbished"];
 
 // Empty form shape — reused both for initial state and reset-after-submit

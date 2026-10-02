@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        style={{ backgroundColor: "#FAFAF9" }}
+        style={{ backgroundColor: "#ffffff", color: "#18020c" }}
       >
         {children}
         {/* Toast notifications */}

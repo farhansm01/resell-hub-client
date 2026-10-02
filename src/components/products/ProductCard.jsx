@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 const conditionColor = (condition) => {
   if (condition === "Like New") return "#16A34A";
   if (condition === "Good") return "#CA8A04";
-  return "#78716C";
+  return "#7a6c5d";
 };
 
 export default function ProductCard({ product, index = 0 }) {
@@ -20,12 +20,12 @@ export default function ProductCard({ product, index = 0 }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.35, delay: index * 0.05 }}
-      className="rounded-xl border overflow-hidden shadow-sm hover:shadow-md transition-shadow cursor-pointer"
-      style={{ borderColor: "#E7E5E4", backgroundColor: "#FFFFFF" }}
+      className="rounded-xl border overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer"
+      style={{ borderColor: "rgba(122, 108, 93, 0.3)", backgroundColor: "#ffffff" }}
       onClick={() => router.push(`/products/${product._id}`)}
     >
       {/* Image */}
-      <div className="w-full h-48 overflow-hidden bg-gray-50">
+      <div className="w-full h-48 overflow-hidden bg-stone-50">
         <img
           src={product.image}
           alt={product.title}
@@ -35,20 +35,20 @@ export default function ProductCard({ product, index = 0 }) {
 
       {/* Body */}
       <div className="p-4 space-y-3">
-        <h3 className="font-semibold text-sm line-clamp-2" style={{ color: "#1C1917" }}>
+        <h3 className="font-semibold text-sm line-clamp-2" style={{ color: "#18020c" }}>
           {product.title}
         </h3>
 
         {/* Badges */}
         <div className="flex gap-2 flex-wrap">
           <span
-            className="text-xs px-2 py-0.5 rounded-full font-medium"
-            style={{ backgroundColor: "#FFF7ED", color: "#F97316" }}
+            className="text-xs px-2.5 py-0.5 rounded-full font-medium"
+            style={{ backgroundColor: "rgba(241, 176, 85, 0.2)", color: "#18020c" }}
           >
             {product.category}
           </span>
           <span
-            className="text-xs px-2 py-0.5 rounded-full font-medium"
+            className="text-xs px-2.5 py-0.5 rounded-full font-medium"
             style={{ backgroundColor: "#F0FDF4", color: conditionColor(product.condition) }}
           >
             {product.condition}
@@ -56,15 +56,15 @@ export default function ProductCard({ product, index = 0 }) {
         </div>
 
         {/* Price */}
-        <p className="text-lg font-bold" style={{ color: "#F97316" }}>
-          ৳{product.price.toLocaleString()}
+        <p className="text-lg font-bold" style={{ color: "#f1b055" }}>
+          ৳{product.price?.toLocaleString()}
         </p>
 
         {/* Button */}
         <button
           onClick={(e) => { e.stopPropagation(); router.push(`/products/${product._id}`); }}
-          className="w-full py-2 rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
-          style={{ backgroundColor: "#F97316" }}
+          className="w-full py-2 rounded-xl text-sm font-bold transition-opacity hover:opacity-90"
+          style={{ backgroundColor: "#f1b055", color: "#18020c" }}
         >
           View Details
         </button>

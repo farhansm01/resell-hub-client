@@ -12,15 +12,15 @@ export default function BuyerDashboardLayout({ children }) {
 
   if (isLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#FAFAF9]">
+      <div className="flex h-screen items-center justify-center bg-white">
         <Spinner />
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#FAFAF9]">
-      <aside className="hidden lg:flex lg:w-[250px] lg:shrink-0 lg:flex-col border-r border-[#E7E5E4]">
+    <div className="flex h-screen overflow-hidden bg-white">
+      <aside className="hidden lg:flex lg:w-[250px] lg:shrink-0 lg:flex-col border-r border-[#7a6c5d]/25">
         <BuyerSidebar />
       </aside>
 
@@ -33,16 +33,17 @@ export default function BuyerDashboardLayout({ children }) {
       </Drawer>
 
       <div className="flex flex-1 flex-col overflow-y-auto">
-        <header className="flex items-center gap-3 border-b border-[#E7E5E4] bg-white px-4 py-3 lg:hidden">
+        <header className="flex items-center gap-3 border-b border-[#7a6c5d]/25 bg-white px-4 py-3 lg:hidden">
           <button
             onClick={() => setIsDrawerOpen(true)}
-            className="rounded-md p-2 text-[#1C1917] hover:bg-[#F97316]/10"
+            className="rounded-md p-2 hover:bg-[#f1b055]/10"
+            style={{ color: "#18020c" }}
             aria-label="Open menu"
           >
             <Bars width={22} height={22} />
           </button>
-          <span className="font-bold text-[#1C1917]">
-            <span className="text-[#F97316]">ReSell</span>Hub
+          <span className="font-bold" style={{ color: "#18020c" }}>
+            <span style={{ color: "#f1b055" }}>ReSell</span>Hub
           </span>
         </header>
 

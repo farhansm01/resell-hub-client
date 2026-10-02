@@ -23,7 +23,7 @@ export default function DashboardIndexRedirect() {
   }, [session, isPending, router]);
 
   return (
-    <div className="flex h-screen items-center justify-center bg-[#FAFAF9]">
+    <div className="flex h-screen items-center justify-center bg-white">
       <Spinner />
     </div>
   );

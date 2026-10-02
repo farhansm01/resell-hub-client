@@ -20,6 +20,7 @@ const NAV_LINKS = [
   { label: "My Products", href: "/dashboard/seller/my-products", icon: LayoutCellsLarge },
   { label: "Manage Orders", href: "/dashboard/seller/manage-orders", icon: FolderOpen },
   { label: "Analytics", href: "/dashboard/seller/analytics", icon: ChartColumn },
+  { label: "Profile", href: "/dashboard/seller/profile", icon: Person },
 ];
 
 export default function SellerSidebar({ onNavigate }) {
@@ -30,7 +31,7 @@ export default function SellerSidebar({ onNavigate }) {
 
   const handleSignOut = async () => {
     try {
-      router.push("/"); // push FIRST
+      router.push("/");
       await authClient.signOut();
       toast.success("Signed out successfully");
     } catch (err) {
@@ -39,20 +40,21 @@ export default function SellerSidebar({ onNavigate }) {
   };
 
   return (
-    <div className="flex h-full w-full flex-col bg-white text-[#1C1917]">
-      <div className="flex items-center gap-1 px-6 py-5 border-b border-[#E7E5E4]">
-        <span className="text-xl font-bold text-[#F97316]">ReSell</span>
-        <span className="text-xl font-bold text-[#1C1917]">Hub</span>
-      </div>
+    <div className="flex h-full w-full flex-col bg-white" style={{ color: "#18020c" }}>
+      {/* Logo -> Links to Homepage */}
+      <Link href="/" className="flex items-center gap-1 px-6 py-5 border-b border-[#7a6c5d]/25 hover:opacity-90 transition-opacity">
+        <span className="text-xl font-bold" style={{ color: "#f1b055" }}>ReSell</span>
+        <span className="text-xl font-bold" style={{ color: "#18020c" }}>Hub</span>
+      </Link>
 
-      <div className="flex items-center gap-3 px-6 py-4 border-b border-[#E7E5E4]">
+      <div className="flex items-center gap-3 px-6 py-4 border-b border-[#7a6c5d]/25">
         <Avatar src={user?.image || undefined} name={user?.name || "U"} size="sm" className="shrink-0" />
         <div className="flex flex-col min-w-0">
-          <span className="text-sm font-medium truncate text-[#1C1917]">
+          <span className="text-sm font-medium truncate" style={{ color: "#18020c" }}>
             {user?.name || "Loading..."}
           </span>
           {user?.role && (
-            <Chip size="sm" variant="flat" className="rounded-full px-2 py-1 mt-1 w-fit bg-[#F97316]/15 text-[#C2410C] capitalize">
+            <Chip size="sm" variant="flat" className="text-xs rounded-lg px-2 py-0.5 mt-1 w-fit capitalize font-bold" style={{ backgroundColor: "rgba(241, 176, 85, 0.2)", color: "#18020c" }}>
               {user.role}
             </Chip>
           )}
@@ -67,8 +69,11 @@ export default function SellerSidebar({ onNavigate }) {
               key={href}
               href={href}
               onClick={onNavigate}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${isActive ? "bg-[#F97316] text-white" : "text-[#78716C] hover:bg-[#F97316]/10 hover:text-[#1C1917]"
-                }`}
+              className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors"
+              style={{
+                backgroundColor: isActive ? "#f1b055" : "transparent",
+                color: isActive ? "#18020c" : "#7a6c5d",
+              }}
             >
               <Icon className="shrink-0" width={20} height={20} />
               {label}
@@ -77,11 +82,12 @@ export default function SellerSidebar({ onNavigate }) {
         })}
       </nav>
 
-      <div className="px-3 py-4 border-t border-[#E7E5E4]">
+      <div className="px-3 py-4 border-t border-[#7a6c5d]/25">
         <Button
           onPress={handleSignOut}
           variant="light"
-          className="w-full justify-start gap-3 text-[#78716C] hover:text-[#1C1917] hover:bg-[#F97316]/10"
+          className="w-full justify-start gap-3 hover:text-[#18020c] hover:bg-[#f1b055]/15 font-medium"
+          style={{ color: "#7a6c5d" }}
           startContent={<Person width={20} height={20} />}
         >
           Sign Out

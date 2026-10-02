@@ -62,19 +62,17 @@ export default function SignInPage() {
         return;
       }
 
-      // check if user is blocked after signin
-      const token = await getAuthToken()
+      const token = await getAuthToken();
       const userRes = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/users/${email}`,
         { headers: { Authorization: `Bearer ${token}` } }
-      )
-      const userData = await userRes.json()
+      );
+      const userData = await userRes.json();
 
       if (userData.status === "blocked") {
-        // sign out immediately and show error
-        await signOut()
-        toast.error("Your account has been blocked. Please contact support.")
-        return
+        await signOut();
+        toast.error("Your account has been blocked. Please contact support.");
+        return;
       }
 
       toast.success("Welcome back!");
@@ -100,28 +98,28 @@ export default function SignInPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: "#FAFAF9" }}>
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-md p-8 flex flex-col gap-5">
+    <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ backgroundColor: "#ffffff" }}>
+      <div className="w-full max-w-md bg-white border rounded-2xl shadow-md p-8 flex flex-col gap-5" style={{ borderColor: "rgba(122, 108, 93, 0.25)" }}>
 
         {/* Header */}
         <div className="text-center">
-          <h1 className="text-2xl font-bold" style={{ color: "#1C1917" }}>Welcome Back</h1>
-          <p className="text-sm mt-1" style={{ color: "#78716C" }}>Sign in to your ReSell Hub account</p>
+          <h1 className="text-2xl font-bold" style={{ color: "#18020c" }}>Welcome Back</h1>
+          <p className="text-sm mt-1" style={{ color: "#7a6c5d" }}>Sign in to your ReSell Hub account</p>
         </div>
 
         {/* Email */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium" style={{ color: "#1C1917" }}>Email</label>
+          <label className="text-sm font-medium" style={{ color: "#18020c" }}>Email</label>
           <input
             type="email"
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             onBlur={(e) => handleBlur("email", e.target.value)}
-            className="w-full px-4 py-2.5 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-orange-400 transition"
+            className="w-full px-4 py-2.5 border rounded-xl text-sm outline-none transition"
             style={{
-              borderColor: errors.email ? "#DC2626" : "#E7E5E4",
-              color: "#1C1917",
+              borderColor: errors.email ? "#DC2626" : "rgba(122, 108, 93, 0.3)",
+              color: "#18020c",
             }}
           />
           {errors.email && (
@@ -131,7 +129,7 @@ export default function SignInPage() {
 
         {/* Password */}
         <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium" style={{ color: "#1C1917" }}>Password</label>
+          <label className="text-sm font-medium" style={{ color: "#18020c" }}>Password</label>
           <div className="relative">
             <input
               type={showPassword ? "text" : "password"}
@@ -139,17 +137,17 @@ export default function SignInPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               onBlur={(e) => handleBlur("password", e.target.value)}
-              className="w-full px-4 py-2.5 border rounded-xl text-sm outline-none focus:ring-2 focus:ring-orange-400 transition pr-10"
+              className="w-full px-4 py-2.5 border rounded-xl text-sm outline-none transition pr-10"
               style={{
-                borderColor: errors.password ? "#DC2626" : "#E7E5E4",
-                color: "#1C1917",
+                borderColor: errors.password ? "#DC2626" : "rgba(122, 108, 93, 0.3)",
+                color: "#18020c",
               }}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 -translate-y-1/2"
-              style={{ color: "#78716C" }}
+              style={{ color: "#7a6c5d" }}
             >
               {showPassword ? <EyeSlash className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
@@ -163,17 +161,17 @@ export default function SignInPage() {
         <button
           onClick={handleSubmit}
           disabled={loading}
-          className="w-full py-2.5 rounded-xl text-sm font-semibold text-white transition hover:opacity-90 disabled:opacity-60"
-          style={{ backgroundColor: "#F97316" }}
+          className="w-full py-2.5 rounded-xl text-sm font-bold transition hover:opacity-90 disabled:opacity-60"
+          style={{ backgroundColor: "#f1b055", color: "#18020c" }}
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>
 
         {/* Divider */}
         <div className="flex items-center gap-3">
-          <div className="flex-1 h-px" style={{ backgroundColor: "#E7E5E4" }} />
-          <span className="text-xs font-medium" style={{ color: "#78716C" }}>or continue with</span>
-          <div className="flex-1 h-px" style={{ backgroundColor: "#E7E5E4" }} />
+          <div className="flex-1 h-px" style={{ backgroundColor: "rgba(122, 108, 93, 0.25)" }} />
+          <span className="text-xs font-medium" style={{ color: "#7a6c5d" }}>or continue with</span>
+          <div className="flex-1 h-px" style={{ backgroundColor: "rgba(122, 108, 93, 0.25)" }} />
         </div>
 
         {/* Google */}
@@ -181,17 +179,17 @@ export default function SignInPage() {
           type="button"
           onClick={handleGoogle}
           disabled={googleLoading}
-          className="w-full py-2.5 rounded-xl text-sm font-medium border flex items-center justify-center gap-2 transition hover:bg-gray-50 disabled:opacity-60"
-          style={{ borderColor: "#E7E5E4", color: "#1C1917" }}
+          className="w-full py-2.5 rounded-xl text-sm font-semibold border flex items-center justify-center gap-2 transition hover:bg-stone-50 disabled:opacity-60"
+          style={{ borderColor: "rgba(122, 108, 93, 0.3)", color: "#18020c" }}
         >
           <GoogleIcon />
           {googleLoading ? "Redirecting..." : "Sign in with Google"}
         </button>
 
         {/* Redirect */}
-        <p className="text-center text-sm" style={{ color: "#78716C" }}>
+        <p className="text-center text-sm" style={{ color: "#7a6c5d" }}>
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="font-semibold hover:underline" style={{ color: "#F97316" }}>
+          <Link href="/signup" className="font-bold hover:underline" style={{ color: "#f1b055" }}>
             Sign Up
           </Link>
         </p>
